@@ -1,10 +1,33 @@
 import { sql } from "drizzle-orm";
-import { pgTable, text, varchar, integer, boolean, timestamp, jsonb, decimal } from "drizzle-orm/pg-core";
+import { pgTable, text, varchar, integer, boolean, timestamp, jsonb } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
+import { index } from "drizzle-orm/pg-core";
 
-// Users table
+// Session storage table (for Replit Auth)
+export const sessions = pgTable(
+  "sessions",
+  {
+    sid: varchar("sid").primaryKey(),
+    sess: jsonb("sess").notNull(),
+    expire: timestamp("expire").notNull(),
+  },
+  (table) => [index("IDX_session_expire").on(table.expire)]
+);
+
+// Admin users table (for Replit Auth)
 export const users = pgTable("users", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  email: varchar("email").unique(),
+  firstName: varchar("first_name"),
+  lastName: varchar("last_name"),
+  profileImageUrl: varchar("profile_image_url"),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// App Users table
+export const appUsers = pgTable("app_users", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   username: text("username").notNull().unique(),
   email: text("email").notNull().unique(),
@@ -22,10 +45,10 @@ export const users = pgTable("users", {
 export const transactions = pgTable("transactions", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   userId: text("user_id").notNull(),
-  type: text("type").notNull(), // "earn", "spend", "bonus", "referral", "withdrawal"
+  type: text("type").notNull(),
   amount: integer("amount").notNull(),
   description: text("description").notNull(),
-  status: text("status").notNull().default("completed"), // "completed", "pending", "failed"
+  status: text("status").notNull().default("completed"),
   createdAt: timestamp("created_at").notNull().default(sql`now()`),
 });
 
@@ -37,7 +60,7 @@ export const offers = pgTable("offers", {
   coins: integer("coins").notNull(),
   imageUrl: text("image_url"),
   actionUrl: text("action_url"),
-  category: text("category").notNull(), // "survey", "app", "video", "other"
+  category: text("category").notNull(),
   isActive: boolean("is_active").notNull().default(true),
   priority: integer("priority").notNull().default(0),
   createdAt: timestamp("created_at").notNull().default(sql`now()`),
@@ -59,7 +82,7 @@ export const promoCodes = pgTable("promo_codes", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   code: text("code").notNull().unique(),
   coins: integer("coins").notNull(),
-  maxUses: integer("max_uses").notNull().default(0), // 0 = unlimited
+  maxUses: integer("max_uses").notNull().default(0),
   usedCount: integer("used_count").notNull().default(0),
   expiresAt: timestamp("expires_at"),
   isActive: boolean("is_active").notNull().default(true),
@@ -71,8 +94,8 @@ export const supportTickets = pgTable("support_tickets", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   userId: text("user_id").notNull(),
   subject: text("subject").notNull(),
-  status: text("status").notNull().default("open"), // "open", "in_progress", "resolved", "closed"
-  priority: text("priority").notNull().default("medium"), // "low", "medium", "high"
+  status: text("status").notNull().default("open"),
+  priority: text("priority").notNull().default("medium"),
   createdAt: timestamp("created_at").notNull().default(sql`now()`),
   updatedAt: timestamp("updated_at").notNull().default(sql`now()`),
 });
@@ -82,7 +105,7 @@ export const ticketMessages = pgTable("ticket_messages", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   ticketId: text("ticket_id").notNull(),
   senderId: text("sender_id").notNull(),
-  senderType: text("sender_type").notNull(), // "user" or "admin"
+  senderType: text("sender_type").notNull(),
   message: text("message").notNull(),
   createdAt: timestamp("created_at").notNull().default(sql`now()`),
 });
@@ -94,20 +117,9 @@ export const achievements = pgTable("achievements", {
   description: text("description").notNull(),
   icon: text("icon").notNull(),
   coins: integer("coins").notNull(),
-  requirement: integer("requirement").notNull(), // e.g., "Complete 10 tasks"
-  requirementType: text("requirement_type").notNull(), // "tasks_completed", "coins_earned", "referrals"
+  requirement: integer("requirement").notNull(),
+  requirementType: text("requirement_type").notNull(),
   isActive: boolean("is_active").notNull().default(true),
-  createdAt: timestamp("created_at").notNull().default(sql`now()`),
-});
-
-// User achievements (junction table)
-export const userAchievements = pgTable("user_achievements", {
-  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  userId: text("user_id").notNull(),
-  achievementId: text("achievement_id").notNull(),
-  progress: integer("progress").notNull().default(0),
-  completed: boolean("completed").notNull().default(false),
-  completedAt: timestamp("completed_at"),
   createdAt: timestamp("created_at").notNull().default(sql`now()`),
 });
 
@@ -118,7 +130,7 @@ export const tasks = pgTable("tasks", {
   description: text("description").notNull(),
   coins: integer("coins").notNull(),
   actionUrl: text("action_url"),
-  category: text("category").notNull(), // "daily", "weekly", "special"
+  category: text("category").notNull(),
   isActive: boolean("is_active").notNull().default(true),
   priority: integer("priority").notNull().default(0),
   createdAt: timestamp("created_at").notNull().default(sql`now()`),
@@ -129,9 +141,9 @@ export const withdrawals = pgTable("withdrawals", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   userId: text("user_id").notNull(),
   amount: integer("amount").notNull(),
-  method: text("method").notNull(), // "paypal", "bank", "crypto", etc.
+  method: text("method").notNull(),
   accountDetails: text("account_details").notNull(),
-  status: text("status").notNull().default("pending"), // "pending", "approved", "rejected", "processing", "completed"
+  status: text("status").notNull().default("pending"),
   adminNote: text("admin_note"),
   createdAt: timestamp("created_at").notNull().default(sql`now()`),
   processedAt: timestamp("processed_at"),
@@ -143,7 +155,7 @@ export const referrals = pgTable("referrals", {
   referrerId: text("referrer_id").notNull(),
   referredId: text("referred_id").notNull(),
   coinsEarned: integer("coins_earned").notNull().default(0),
-  status: text("status").notNull().default("active"), // "active", "inactive"
+  status: text("status").notNull().default("active"),
   createdAt: timestamp("created_at").notNull().default(sql`now()`),
 });
 
@@ -161,10 +173,10 @@ export const notifications = pgTable("notifications", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   title: text("title").notNull(),
   message: text("message").notNull(),
-  targetType: text("target_type").notNull(), // "all", "segment", "individual"
-  targetUsers: text("target_users").array(), // array of user IDs if individual
-  segment: text("segment"), // "active", "inactive", "high_earners", etc.
-  status: text("status").notNull().default("draft"), // "draft", "sent", "failed"
+  targetType: text("target_type").notNull(),
+  targetUsers: text("target_users").array(),
+  segment: text("segment"),
+  status: text("status").notNull().default("draft"),
   sentAt: timestamp("sent_at"),
   createdAt: timestamp("created_at").notNull().default(sql`now()`),
 });
@@ -173,14 +185,15 @@ export const notifications = pgTable("notifications", {
 export const autoBanRules = pgTable("auto_ban_rules", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   ruleName: text("rule_name").notNull(),
-  ruleType: text("rule_type").notNull(), // "suspicious_activity", "multiple_accounts", "withdrawal_fraud"
+  ruleType: text("rule_type").notNull(),
   threshold: integer("threshold").notNull(),
   isActive: boolean("is_active").notNull().default(true),
   createdAt: timestamp("created_at").notNull().default(sql`now()`),
 });
 
 // Insert schemas
-export const insertUserSchema = createInsertSchema(users).omit({ id: true, createdAt: true });
+export const insertUserSchema = createInsertSchema(users).omit({ id: true, createdAt: true, updatedAt: true });
+export const insertAppUserSchema = createInsertSchema(appUsers).omit({ id: true, createdAt: true });
 export const insertTransactionSchema = createInsertSchema(transactions).omit({ id: true, createdAt: true });
 export const insertOfferSchema = createInsertSchema(offers).omit({ id: true, createdAt: true });
 export const insertBannerSchema = createInsertSchema(banners).omit({ id: true, createdAt: true });
@@ -188,7 +201,6 @@ export const insertPromoCodeSchema = createInsertSchema(promoCodes).omit({ id: t
 export const insertSupportTicketSchema = createInsertSchema(supportTickets).omit({ id: true, createdAt: true, updatedAt: true });
 export const insertTicketMessageSchema = createInsertSchema(ticketMessages).omit({ id: true, createdAt: true });
 export const insertAchievementSchema = createInsertSchema(achievements).omit({ id: true, createdAt: true });
-export const insertUserAchievementSchema = createInsertSchema(userAchievements).omit({ id: true, createdAt: true });
 export const insertTaskSchema = createInsertSchema(tasks).omit({ id: true, createdAt: true });
 export const insertWithdrawalSchema = createInsertSchema(withdrawals).omit({ id: true, createdAt: true, processedAt: true });
 export const insertReferralSchema = createInsertSchema(referrals).omit({ id: true, createdAt: true });
@@ -197,8 +209,11 @@ export const insertNotificationSchema = createInsertSchema(notifications).omit({
 export const insertAutoBanRuleSchema = createInsertSchema(autoBanRules).omit({ id: true, createdAt: true });
 
 // Types
-export type InsertUser = z.infer<typeof insertUserSchema>;
+export type UpsertUser = typeof users.$inferInsert;
 export type User = typeof users.$inferSelect;
+
+export type InsertAppUser = z.infer<typeof insertAppUserSchema>;
+export type AppUser = typeof appUsers.$inferSelect;
 
 export type InsertTransaction = z.infer<typeof insertTransactionSchema>;
 export type Transaction = typeof transactions.$inferSelect;
@@ -220,9 +235,6 @@ export type TicketMessage = typeof ticketMessages.$inferSelect;
 
 export type InsertAchievement = z.infer<typeof insertAchievementSchema>;
 export type Achievement = typeof achievements.$inferSelect;
-
-export type InsertUserAchievement = z.infer<typeof insertUserAchievementSchema>;
-export type UserAchievement = typeof userAchievements.$inferSelect;
 
 export type InsertTask = z.infer<typeof insertTaskSchema>;
 export type Task = typeof tasks.$inferSelect;
