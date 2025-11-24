@@ -1,4 +1,4 @@
-import type { Express } from "express";
+import type { Express, Request } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { 
@@ -10,11 +10,20 @@ import {
 import { z } from "zod";
 import { isAuthenticated } from "./authUtils";
 
+declare global {
+  namespace Express {
+    interface Request {
+      isAuthenticated?(): boolean;
+      logout?(callback: (err?: any) => void): void;
+    }
+  }
+}
+
 export async function registerRoutes(app: Express): Promise<Server> {
   // Auth endpoints
-  app.get("/api/auth/user", (req, res) => {
+  app.get("/api/auth/user", (req: Request, res) => {
     const user = (req as any).user as any;
-    if (!req.isAuthenticated() || !user) {
+    if (!req.isAuthenticated?.() || !user) {
       return res.status(401).json({ message: "Unauthorized" });
     }
     res.json({
@@ -26,8 +35,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
     });
   });
 
-  app.post("/api/logout", (req, res) => {
-    req.logout((err) => {
+  app.post("/api/logout", (req: Request, res) => {
+    req.logout?.((err?: any) => {
       if (err) return res.status(500).json({ error: err.message });
       res.json({ success: true });
     });
