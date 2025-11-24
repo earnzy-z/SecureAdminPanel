@@ -11,8 +11,8 @@ export interface AdminUser {
 export function useAuth() {
   const { data: user, isLoading } = useQuery({
     queryKey: ["/api/auth/user"],
-    staleTime: Infinity,
-    gcTime: Infinity,
+    staleTime: 1000 * 60 * 60, // 1 hour
+    gcTime: 1000 * 60 * 60 * 24, // 24 hours
     retry: 1,
     retryDelay: 1000,
   });

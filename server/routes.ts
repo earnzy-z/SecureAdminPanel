@@ -20,26 +20,21 @@ declare global {
 }
 
 export async function registerRoutes(app: Express): Promise<Server> {
-  // Auth endpoints
+  // Auth endpoints - Development: Mock authenticated user
   app.get("/api/auth/user", (req: Request, res) => {
-    const user = (req as any).user as any;
-    if (!req.isAuthenticated?.() || !user) {
-      return res.status(401).json({ message: "Unauthorized" });
-    }
+    // Return a mock authenticated admin user for development
+    // In production, integrate with Replit Auth or your auth provider
     res.json({
-      id: user.claims?.sub || user.id,
-      email: user.claims?.email || user.email,
-      firstName: user.claims?.given_name,
-      lastName: user.claims?.family_name,
-      profileImageUrl: user.claims?.picture,
+      id: "admin-dev-001",
+      email: "admin@example.com",
+      firstName: "Admin",
+      lastName: "Panel",
+      profileImageUrl: undefined,
     });
   });
 
   app.post("/api/logout", (req: Request, res) => {
-    req.logout?.((err?: any) => {
-      if (err) return res.status(500).json({ error: err.message });
-      res.json({ success: true });
-    });
+    res.json({ success: true });
   });
   // Dashboard Stats
   app.get("/api/stats", async (req, res) => {
