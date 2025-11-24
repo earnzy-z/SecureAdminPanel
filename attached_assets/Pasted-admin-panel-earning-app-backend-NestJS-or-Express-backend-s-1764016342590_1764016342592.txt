@@ -1,0 +1,127 @@
+admin-panel-earning-app/
+├── backend/                          # NestJS or Express backend
+│   ├── src/
+│   │   ├── admin/                    # Admin-only guards & decorators
+│   │   ├── auth/
+│   │   │   ├── auth.module.ts
+│   │   │   ├── auth.service.ts
+│   │   │   ├── jwt.strategy.ts
+│   │   │   ├── local.strategy.ts
+│   │   │   └── admin.guard.ts
+│   │   ├── users/
+│   │   │   ├── users.controller.ts   # List, search, ban, view profile, transactions
+│   │   │   ├── users.service.ts
+│   │   │   └── dto/
+│   │   ├── transactions/
+│   │   ├── coins/
+│   │   │   ├── coins.controller.ts   # Add/deduct coins, history
+│   │   │   └── coins.service.ts
+│   │   ├── ban/
+│   │   │   ├── ban.controller.ts     # Manual + Auto-ban rules
+│   │   │   └── auto-ban.worker.ts    # Background job for suspicious activity
+│   │   ├── notifications/
+│   │   │   ├── fcm.service.ts
+│   │   │   └── notification.controller.ts
+│   │   ├── banners/
+│   │   │   └── banner.controller.ts  # Upload, delete, reorder
+│   │   ├── offers/
+│   │   │   ├── offerwall.controller.ts
+│   │   │   ├── cards.controller.ts
+│   │   │   └── offer.controller.ts   # Add/remove/edit offers
+│   │   ├── promocodes/
+│   │   ├── referrals/
+│   │   ├── leaderboard/
+│   │   ├── withdrawals/
+│   │   │   ├── withdraw.controller.ts   # Approve/reject, limits
+│   │   │   └── withdraw.service.ts
+│   │   ├── support/
+│   │   │   ├── ticket.controller.ts
+│   │   │   └── livechat/
+│   │   │       ├── chat.gateway.ts      # Socket.IO
+│   │   │       └── chat.service.ts
+│   │   ├── achievements/
+│   │   ├── tasks/
+│   │   ├── rewards-bonus/
+│   │   ├── app-ui-control/           # Control Android app UI from admin
+│   │   │   ├── homepage-config.controller.ts
+│   │   │   └── theme.controller.ts
+│   │   ├── analytics/
+│   │   ├── logs/                     # Admin activity logs
+│   │   ├── dynamo/
+│   │   │   ├── dynamo.module.ts
+│   │   │   └── dynamo.service.ts     # Single table operations
+│   │   ├── s3/
+│   │   │   └── s3.service.ts         # Presigned URLs
+│   │   ├── common/
+│   │   │   ├── filters/
+│   │   │   ├── interceptors/
+│   │   │   └── decorators/
+│   │   ├── config/
+│   │   └── main.ts
+│   ├── prisma/                           # Optional if hybrid with PostgreSQL for logs
+│   ├── .env
+│   └── package.json
+│
+├── frontend-admin/                       # React + Vite Admin Panel (Mobile Responsive)
+│   ├── src/
+│   │   ├── assets/
+│   │   ├── components/
+│   │   │   ├── layout/
+│   │   │   │   ├── Sidebar.jsx
+│   │   │   │   ├── Navbar.jsx
+│   │   │   │   └── ProtectedRoute.jsx
+│   │   │   ├── tables/
+│   │   │   │   ├── UsersTable.jsx
+│   │   │   │   ├── TransactionsTable.jsx
+│   │   │   │   └── WithdrawRequests.jsx
+│   │   │   ├── modals/
+│   │   │   ├── charts/
+│   │   │   └── common/
+│   │   ├── pages/
+│   │   │   ├── Dashboard.jsx
+│   │   │   ├── Users/
+│   │   │   │   ├── UserList.jsx
+│   │   │   │   ├── UserProfile.jsx
+│   │   │   │   └── BanManagement.jsx
+│   │   │   ├── Coins/
+│   │   │   ├── Offers/
+│   │   │   │   ├── OfferwallManager.jsx
+│   │   │   │   ├── CardsManager.jsx
+│   │   │   │   └── AddEditOffer.jsx
+│   │   │   ├── Banners/
+│   │   │   ├── Notifications.jsx
+│   │   │   ├── Promocodes.jsx
+│   │   │   ├── Referrals.jsx
+│   │   │   ├── Leaderboard.jsx
+│   │   │   ├── Withdrawals.jsx
+│   │   │   ├── SupportTickets.jsx
+│   │   │   ├── LiveChatAdmin.jsx
+│   │   │   ├── Achievements.jsx
+│   │   │   ├── Tasks.jsx
+│   │   │   ├── RewardsBonus.jsx
+│   │   │   ├── AppUIControl.jsx
+│   │   │   └── Settings.jsx
+│   │   ├── services/
+│   │   │   ├── api.js
+│   │   │   └── socket.js
+│   │   ├── context/
+│   │   │   └── AuthContext.jsx
+│   │   ├── hooks/
+│   │   ├── utils/
+│   │   ├── App.jsx
+│   │   └── main.jsx
+│   ├── public/
+│   ├── vite.config.js
+│   └── package.json
+│
+├── shared/                               # Shared types (if using TypeScript)
+│   └── types/
+│       └── index.ts
+│
+├── scripts/
+│   └── deploy.sh
+│
+├── docker-compose.yml
+├── Dockerfile
+├── .gitignore
+└── README.md
