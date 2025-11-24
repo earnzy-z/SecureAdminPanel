@@ -11,7 +11,10 @@ export interface AdminUser {
 export function useAuth() {
   const { data: user, isLoading } = useQuery({
     queryKey: ["/api/auth/user"],
-    retry: false,
+    staleTime: Infinity,
+    gcTime: Infinity,
+    retry: 1,
+    retryDelay: 1000,
   });
 
   return {

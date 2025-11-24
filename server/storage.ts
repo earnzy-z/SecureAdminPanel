@@ -1,5 +1,5 @@
 import {
-  type User, type InsertUser,
+  type AppUser, type InsertAppUser,
   type Transaction, type InsertTransaction,
   type Offer, type InsertOffer,
   type Banner, type InsertBanner,
@@ -7,7 +7,6 @@ import {
   type SupportTicket, type InsertSupportTicket,
   type TicketMessage, type InsertTicketMessage,
   type Achievement, type InsertAchievement,
-  type UserAchievement, type InsertUserAchievement,
   type Task, type InsertTask,
   type Withdrawal, type InsertWithdrawal,
   type Referral, type InsertReferral,
@@ -19,11 +18,11 @@ import { randomUUID } from "crypto";
 
 export interface IStorage {
   // Users
-  getAllUsers(): Promise<User[]>;
-  getUser(id: string): Promise<User | undefined>;
-  getUserByUsername(username: string): Promise<User | undefined>;
-  createUser(user: InsertUser): Promise<User>;
-  updateUser(id: string, updates: Partial<User>): Promise<User | undefined>;
+  getAllUsers(): Promise<AppUser[]>;
+  getUser(id: string): Promise<AppUser | undefined>;
+  getUserByUsername(username: string): Promise<AppUser | undefined>;
+  createUser(user: InsertAppUser): Promise<AppUser>;
+  updateUser(id: string, updates: Partial<AppUser>): Promise<AppUser | undefined>;
   banUser(id: string, reason?: string): Promise<void>;
   unbanUser(id: string): Promise<void>;
   
@@ -109,7 +108,7 @@ export interface IStorage {
 }
 
 export class MemStorage implements IStorage {
-  private users: Map<string, User> = new Map();
+  private users: Map<string, AppUser> = new Map();
   private transactions: Map<string, Transaction> = new Map();
   private offers: Map<string, Offer> = new Map();
   private banners: Map<string, Banner> = new Map();
@@ -132,7 +131,7 @@ export class MemStorage implements IStorage {
     // Seed some sample users
     for (let i = 1; i <= 20; i++) {
       const id = randomUUID();
-      const user: User = {
+      const user: AppUser = {
         id,
         username: `user${i}`,
         email: `user${i}@example.com`,
@@ -218,21 +217,21 @@ export class MemStorage implements IStorage {
   }
 
   // Users
-  async getAllUsers(): Promise<User[]> {
+  async getAllUsers(): Promise<AppUser[]> {
     return Array.from(this.users.values()).sort((a, b) => 
       new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
     );
   }
 
-  async getUser(id: string): Promise<User | undefined> {
+  async getUser(id: string): Promise<AppUser | undefined> {
     return this.users.get(id);
   }
 
-  async getUserByUsername(username: string): Promise<User | undefined> {
+  async getUserByUsername(username: string): Promise<AppUser | undefined> {
     return Array.from(this.users.values()).find(u => u.username === username);
   }
 
-  async createUser(insertUser: InsertUser): Promise<User> {
+  async createUser(insertUser: InsertAppUser): Promise<AppUser> {
     const id = randomUUID();
     const user: User = {
       ...insertUser,
@@ -250,7 +249,7 @@ export class MemStorage implements IStorage {
     return user;
   }
 
-  async updateUser(id: string, updates: Partial<User>): Promise<User | undefined> {
+  async updateUser(id: string, updates: Partial<AppUser>): Promise<AppUser | undefined> {
     const user = this.users.get(id);
     if (!user) return undefined;
     const updated = { ...user, ...updates };

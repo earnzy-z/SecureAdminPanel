@@ -2,14 +2,36 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { 
-  insertUserSchema, insertTransactionSchema, insertOfferSchema, insertBannerSchema,
+  insertAppUserSchema, insertTransactionSchema, insertOfferSchema, insertBannerSchema,
   insertPromoCodeSchema, insertSupportTicketSchema, insertTicketMessageSchema,
   insertAchievementSchema, insertTaskSchema, insertWithdrawalSchema,
   insertNotificationSchema, insertAutoBanRuleSchema
 } from "@shared/schema";
 import { z } from "zod";
+import { isAuthenticated } from "./authUtils";
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  // Auth endpoints
+  app.get("/api/auth/user", (req, res) => {
+    const user = (req as any).user as any;
+    if (!req.isAuthenticated() || !user) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+    res.json({
+      id: user.claims?.sub || user.id,
+      email: user.claims?.email || user.email,
+      firstName: user.claims?.given_name,
+      lastName: user.claims?.family_name,
+      profileImageUrl: user.claims?.picture,
+    });
+  });
+
+  app.post("/api/logout", (req, res) => {
+    req.logout((err) => {
+      if (err) return res.status(500).json({ error: err.message });
+      res.json({ success: true });
+    });
+  });
   // Dashboard Stats
   app.get("/api/stats", async (req, res) => {
     const users = await storage.getAllUsers();
