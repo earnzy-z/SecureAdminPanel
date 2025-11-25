@@ -24,6 +24,7 @@ import com.earnzy.app.R
 import com.earnzy.app.adapters.EarnTaskAdapter
 import com.earnzy.app.models.EarnTask
 import com.earnzy.app.network.FeaturesApiClient
+import com.earnzy.app.utils.AnimationUtils
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.chip.ChipGroup
@@ -79,8 +80,21 @@ class EarnFragment : Fragment() {
 
         // Initial Load
         loadTasksFromBackend()
+        
+        // Add entrance animations
+        animateEntrance(view)
 
         return view
+    }
+    
+    private fun animateEntrance(view: View) {
+        try {
+            AnimationUtils.slideUpIn(searchInput ?: return, duration = 300, delay = 0)
+            AnimationUtils.slideUpIn(featuredPager ?: return, duration = 400, delay = 100)
+            AnimationUtils.slideUpIn(opportunitiesRecycler ?: return, duration = 400, delay = 200)
+        } catch (e: Exception) {
+            Log.e("EarnFragment", "Animation error", e)
+        }
     }
 
     override fun onResume() {

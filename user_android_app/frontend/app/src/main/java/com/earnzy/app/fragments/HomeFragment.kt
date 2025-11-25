@@ -26,6 +26,7 @@ import com.earnzy.app.models.BannerItem
 import com.earnzy.app.models.HomeResponse
 import com.earnzy.app.network.FeaturesApiClient
 import com.earnzy.app.util.ParallaxPageTransformer
+import com.earnzy.app.utils.AnimationUtils
 import com.facebook.shimmer.ShimmerFrameLayout
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.button.MaterialButton
@@ -78,7 +79,18 @@ class HomeFragment : Fragment() {
         setupRecycler()
         setupBannerPager()
         setupFab()
+        animateEntrance(view)
         return view
+    }
+    
+    private fun animateEntrance(view: View) {
+        try {
+            AnimationUtils.slideUpIn(coinsText ?: return, duration = 400, delay = 0)
+            AnimationUtils.slideUpIn(rvQuickActions ?: return, duration = 400, delay = 100)
+            AnimationUtils.slideUpIn(fabQuickEarn ?: return, duration = 400, delay = 200)
+        } catch (e: Exception) {
+            Log.e("HomeFragment", "Animation error", e)
+        }
     }
 
     override fun onResume() {
