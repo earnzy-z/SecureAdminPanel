@@ -153,8 +153,6 @@ class ProfileFragment : Fragment() {
 
                         profileNameText.text = name
                         profileEmailText.text = email
-                        coinsText.text = "₹ $coins"
-                        referralText.text = "$referralCount Referrals"
                         avatarText.text = name.firstOrNull()?.toString()?.uppercase() ?: "U"
                     } else {
                         setupMockProfile(user)
@@ -176,8 +174,6 @@ class ProfileFragment : Fragment() {
         profileNameText.text = user.displayName ?: "User"
         profileEmailText.text = user.email ?: "user@example.com"
         avatarText.text = (user.displayName ?: "U").firstOrNull()?.toString()?.uppercase() ?: "U"
-        coinsText.text = "₹ 0"
-        referralText.text = "0 Referrals"
     }
 
     private fun showLogoutDialog() {
