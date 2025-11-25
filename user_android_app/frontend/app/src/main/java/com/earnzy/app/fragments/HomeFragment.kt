@@ -105,7 +105,7 @@ class HomeFragment : Fragment() {
     }
 
     private fun setupBannerPager() {
-        bannerAdapter = BannerPageAdapter { banner -> 
+        bannerAdapter = BannerPageAdapter(emptyList()) { banner -> 
             Toast.makeText(context, "Banner clicked: ${banner.id}", Toast.LENGTH_SHORT).show()
         }
         bannerPager?.apply {
@@ -185,7 +185,7 @@ class HomeFragment : Fragment() {
                 val banners = parseBanners(jsonStr)
                 withContext(Dispatchers.Main) {
                     if (isAdded && bannerAdapter != null) {
-                        bannerAdapter?.submitList(banners)
+                        bannerAdapter?.updateBanners(banners)
                         startAutoSlide()
                     }
                 }

@@ -32,8 +32,6 @@ class ProfileFragment : Fragment() {
     private lateinit var profileNameText: MaterialTextView
     private lateinit var profileEmailText: MaterialTextView
     private lateinit var avatarText: MaterialTextView
-    private lateinit var coinsText: MaterialTextView
-    private lateinit var referralText: MaterialTextView
     private lateinit var btnLogout: MaterialButton
     private lateinit var achievementsCard: MaterialCardView
     private lateinit var leaderboardCard: MaterialCardView
@@ -57,8 +55,6 @@ class ProfileFragment : Fragment() {
         profileNameText = view.findViewById(R.id.profile_name_text)
         profileEmailText = view.findViewById(R.id.profile_email_text)
         avatarText = view.findViewById(R.id.profile_avatar_text)
-        coinsText = view.findViewById(R.id.profile_coins_text)
-        referralText = view.findViewById(R.id.profile_referral_text)
         btnLogout = view.findViewById(R.id.btn_logout)
         achievementsCard = view.findViewById(R.id.achievements_menu_card)
         leaderboardCard = view.findViewById(R.id.leaderboard_menu_card)
