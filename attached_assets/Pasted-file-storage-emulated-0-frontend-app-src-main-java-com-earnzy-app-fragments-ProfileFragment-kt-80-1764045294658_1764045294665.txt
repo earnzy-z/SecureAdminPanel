@@ -1,0 +1,28 @@
+file:///storage/emulated/0/frontend/app/src/main/java/com/earnzy/app/fragments/ProfileFragment.kt:80:81 Argument type mismatch: actual type is 'ViewParent', but 'View' was expected.
+e: file:///storage/emulated/0/frontend/app/src/main/java/com/earnzy/app/fragments/ProfileFragment.kt:81:83 Argument type mismatch: actual type is 'ViewParent', but 'View' was expected.
+e: file:///storage/emulated/0/frontend/app/src/main/java/com/earnzy/app/fragments/WalletFragment.kt:76:46 Unresolved reference 'fragment_wallet_professional'.
+e: file:///storage/emulated/0/frontend/app/src/main/java/com/earnzy/app/fragments/WalletFragment.kt:93:100 Unresolved reference 'transactions_recycler'.
+e: file:///storage/emulated/0/frontend/app/src/main/java/com/earnzy/app/fragments/WalletFragment.kt:95:84 Argument type mismatch: actual type is 'ViewParent', but 'View' was expected.
+e: file:///storage/emulated/0/frontend/app/src/main/java/com/earnzy/app/fragments/WalletFragment.kt:96:87 Argument type mismatch: actual type is 'ViewParent', but 'View' was expected.
+e: file:///storage/emulated/0/frontend/app/src/main/java/com/earnzy/app/fragments/WalletFragment.kt:130:48 Unresolved reference 'balance_amount_enhanced'.
+e: file:///storage/emulated/0/frontend/app/src/main/java/com/earnzy/app/fragments/WalletFragment.kt:131:45 Unresolved reference 'wallet_card_enhanced'.
+e: file:///storage/emulated/0/frontend/app/src/main/java/com/earnzy/app/fragments/WalletFragment.kt:132:46 Unresolved reference 'btn_withdraw_wallet'.
+e: file:///storage/emulated/0/frontend/app/src/main/java/com/earnzy/app/fragments/WalletFragment.kt:133:45 Unresolved reference 'btn_history_wallet'.
+e: file:///storage/emulated/0/frontend/app/src/main/java/com/earnzy/app/fragments/WalletFragment.kt:136:44 Unresolved reference 'today_earning_stat'.
+e: file:///storage/emulated/0/frontend/app/src/main/java/com/earnzy/app/fragments/WalletFragment.kt:137:43 Unresolved reference 'week_earning_stat'.
+e: file:///storage/emulated/0/frontend/app/src/main/java/com/earnzy/app/fragments/WalletFragment.kt:138:44 Unresolved reference 'month_earning_stat'.
+e: file:///storage/emulated/0/frontend/app/src/main/java/com/earnzy/app/fragments/WalletFragment.kt:139:48 Unresolved reference 'withdrawn_stat'.
+e: file:///storage/emulated/0/frontend/app/src/main/java/com/earnzy/app/fragments/WalletFragment.kt:140:46 Unresolved reference 'pending_stat'.
+e: file:///storage/emulated/0/frontend/app/src/main/java/com/earnzy/app/fragments/WalletFragment.kt:141:47 Unresolved reference 'lifetime_stat'.
+e: file:///storage/emulated/0/frontend/app/src/main/java/com/earnzy/app/fragments/WalletFragment.kt:144:45 Unresolved reference 'paypal_card'.
+e: file:///storage/emulated/0/frontend/app/src/main/java/com/earnzy/app/fragments/WalletFragment.kt:145:43 Unresolved reference 'bank_card'.
+e: file:///storage/emulated/0/frontend/app/src/main/java/com/earnzy/app/fragments/WalletFragment.kt:146:43 Unresolved reference 'giftcard_card'.
+e: file:///storage/emulated/0/frontend/app/src/main/java/com/earnzy/app/fragments/WalletFragment.kt:147:45 Unresolved reference 'crypto_card'.
+e: file:///storage/emulated/0/frontend/app/src/main/java/com/earnzy/app/fragments/WalletFragment.kt:150:55 Unresolved reference 'transactions_recycler_enhanced'.
+e: file:///storage/emulated/0/frontend/app/src/main/java/com/earnzy/app/fragments/WalletFragment.kt:151:53 Unresolved reference 'see_all_transactions'.
+e: file:///storage/emulated/0/frontend/app/src/main/java/com/earnzy/app/fragments/WalletFragment.kt:174:22 Unresolved reference 'paypal_card'.
+e: file:///storage/emulated/0/frontend/app/src/main/java/com/earnzy/app/fragments/WalletFragment.kt:175:22 Unresolved reference 'bank_card'.
+e: file:///storage/emulated/0/frontend/app/src/main/java/com/earnzy/app/fragments/WalletFragment.kt:176:22 Unresolved reference 'giftcard_card'.
+e: file:///storage/emulated/0/frontend/app/src/main/java/com/earnzy/app/fragments/WalletFragment.kt:177:22 Unresolved reference 'crypto_card'.
+
+> Task :app:compileDebugKotlin F
