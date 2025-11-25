@@ -1,0 +1,28 @@
+Task :app:compileDebugKotlin
+w: file:///storage/emulated/0/frontend/app/build/generated/ksp/debug/kotlin/com/bumptech/glide/GeneratedAppGlideModuleImpl.kt:12:5 'internal' declaration exposes 'public/*package*/' type 'GeneratedAppGlideModule'. This will become an error in language version 2.4. See https://youtrack.jetbrains.com/issue/KTLC-271.
+w: file:///storage/emulated/0/frontend/app/src/main/java/com/earnzy/app/Activity/BanActivity.kt:32:9 'fun overridePendingTransition(p0: Int, p1: Int): Unit' is deprecated. Deprecated in Java.
+w: file:///storage/emulated/0/frontend/app/src/main/java/com/earnzy/app/Activity/DailyBonusActivity.kt:82:20 'fun setDecorFitsSystemWindows(p0: Boolean): Unit' is deprecated. Deprecated in Java.
+w: file:///storage/emulated/0/frontend/app/src/main/java/com/earnzy/app/Activity/DailyBonusActivity.kt:98:16 'var statusBarColor: Int' is deprecated. Deprecated in Java.
+w: file:///storage/emulated/0/frontend/app/src/main/java/com/earnzy/app/Activity/DailyBonusActivity.kt:180:97 Java type mismatch: inferred type is 'Date?', but 'Date' was expected.
+w: file:///storage/emulated/0/frontend/app/src/main/java/com/earnzy/app/Activity/DailyBonusActivity.kt:252:81 'static field VIBRATOR_SERVICE: String' is deprecated. Deprecated in Java.
+w: file:///storage/emulated/0/frontend/app/src/main/java/com/earnzy/app/Activity/LeaderboardActivity.kt:79:20 'fun setDecorFitsSystemWindows(p0: Boolean): Unit' is deprecated. Deprecated in Java.
+w: file:///storage/emulated/0/frontend/app/src/main/java/com/earnzy/app/Activity/LeaderboardActivity.kt:95:16 'var statusBarColor: Int' is deprecated. Deprecated in Java.
+w: file:///storage/emulated/0/frontend/app/src/main/java/com/earnzy/app/Activity/LoginActivity.kt:191:9 'fun overridePendingTransition(p0: Int, p1: Int): Unit' is deprecated. Deprecated in Java.
+w: file:///storage/emulated/0/frontend/app/src/main/java/com/earnzy/app/Activity/RewardsHistoryActivity.kt:80:20 'fun setDecorFitsSystemWindows(p0: Boolean): Unit' is deprecated. Deprecated in Java.
+w: file:///storage/emulated/0/frontend/app/src/main/java/com/earnzy/app/Activity/RewardsHistoryActivity.kt:96:16 'var statusBarColor: Int' is deprecated. Deprecated in Java.
+w: file:///storage/emulated/0/frontend/app/src/main/java/com/earnzy/app/Activity/ScratchCardActivity.kt:72:20 'fun setDecorFitsSystemWindows(p0: Boolean): Unit' is deprecated. Deprecated in Java.
+w: file:///storage/emulated/0/frontend/app/src/main/java/com/earnzy/app/Activity/ScratchCardActivity.kt:85:16 'var statusBarColor: Int' is deprecated. Deprecated in Java.
+w: file:///storage/emulated/0/frontend/app/src/main/java/com/earnzy/app/Activity/ScratchCardActivity.kt:189:69 'static field VIBRATOR_SERVICE: String' is deprecated. Deprecated in Java.
+w: file:///storage/emulated/0/frontend/app/src/main/java/com/earnzy/app/Activity/SpinWheelActivity.kt:105:20 'fun setDecorFitsSystemWindows(p0: Boolean): Unit' is deprecated. Deprecated in Java.
+w: file:///storage/emulated/0/frontend/app/src/main/java/com/earnzy/app/Activity/SpinWheelActivity.kt:118:16 'var statusBarColor: Int' is deprecated. Deprecated in Java.
+w: file:///storage/emulated/0/frontend/app/src/main/java/com/earnzy/app/Activity/SpinWheelActivity.kt:233:69 'static field VIBRATOR_SERVICE: String' is deprecated. Deprecated in Java.
+w: file:///storage/emulated/0/frontend/app/src/main/java/com/earnzy/app/Activity/TutorialActivity.kt:27:9 'fun overridePendingTransition(p0: Int, p1: Int): Unit' is deprecated. Deprecated in Java.
+w: file:///storage/emulated/0/frontend/app/src/main/java/com/earnzy/app/Activity/TutorialActivity.kt:39:20 'var statusBarColor: Int' is deprecated. Deprecated in Java.
+w: file:///storage/emulated/0/frontend/app/src/main/java/com/earnzy/app/fragments/EarnFragment.kt:212:30 'fun setOnCheckedChangeListener(p0: ChipGroup.OnCheckedChangeListener?): Unit' is deprecated. Deprecated in Java.
+w: file:///storage/emulated/0/frontend/app/src/main/java/com/earnzy/app/fragments/ProfileFragment.kt:145:32 Condition is always 'true'.
+w: file:///storage/emulated/0/frontend/app/src/main/java/com/earnzy/app/fragments/WalletFragment.kt:140:32 Condition is always 'true'.
+w: file:///storage/emulated/0/frontend/app/src/main/java/com/earnzy/app/models/TutorialPage.kt:11:5 This annotation is currently applied to the value parameter only, but in the future it will also be applied to field.
+- To opt in to applying to both value parameter and field, add '-Xannotation-default-target=param-property' to your compiler arguments.
+- To keep applying to the value parameter only, use the '@param:' annotation target.
+
+See https://youtrack.jetbrains.com/issue/KT-73255 for more details.
