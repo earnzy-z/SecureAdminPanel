@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:animateLayoutChanges="true"
+        android:id="@+id/fragment_container" />
+
+    <!-- Advanced Bottom Navigation with Glassmorphism -->
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottom_navigation"
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:layout_gravity="bottom"
+        android:background="@drawable/bottom_nav_glass_background"
+        app:menu="@menu/bottom_navigation_menu"
+        app:itemTextColor="@color/bottom_nav_color"
+        app:itemIconTint="@color/bottom_nav_color"
+        app:itemRippleColor="@color/ripple_color"
+        app:itemActiveIndicatorStyle="@style/BottomNavActiveIndicator"
+        app:labelVisibilityMode="labeled"
+        android:elevation="16dp"
+        android:paddingBottom="8dp" />
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

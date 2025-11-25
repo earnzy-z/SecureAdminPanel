@@ -59,7 +59,7 @@ class ProfileFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_profile, container, false)
+        return inflater.inflate(R.layout.fragment_profile_professional, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -67,7 +67,22 @@ class ProfileFragment : Fragment() {
         initializeSecureStorage()
         setupViews(view)
         animateCardsEntrance()
+        animateProfileWithAnimationUtils(view)
         loadProfileDataSafely()
+    }
+    
+    private fun animateProfileWithAnimationUtils(view: View) {
+        try {
+            val headerBg = view.findViewById<View>(R.id.profile_avatar_text)?.parent?.parent
+            val statsCards = view.findViewById<View>(R.id.profile_name_text)?.parent
+            val menuSection = view.findViewById<View>(R.id.btn_logout)
+            
+            if (headerBg != null) com.earnzy.app.utils.AnimationUtils.slideUpIn(headerBg, delay = 0)
+            if (statsCards != null) com.earnzy.app.utils.AnimationUtils.slideUpIn(statsCards, delay = 100)
+            if (menuSection != null) com.earnzy.app.utils.AnimationUtils.slideUpIn(menuSection, delay = 200)
+        } catch (e: Exception) {
+            android.util.Log.e("ProfileFragment", "Animation error", e)
+        }
     }
 
     override fun onResume() {

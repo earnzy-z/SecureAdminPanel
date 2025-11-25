@@ -73,17 +73,31 @@ class WalletFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.fragment_wallet, container, false)
+        val view = inflater.inflate(R.layout.fragment_wallet_professional, container, false)
         
         initializeSecureStorage()
         initViews(view)
         setupTransactions()
         setupClickListeners()
         
-        // Initial entry animation
-        animateEntrance()
+        // Add professional animations
+        animateEntranceWithAnimationUtils(view)
         
         return view
+    }
+    
+    private fun animateEntranceWithAnimationUtils(view: View) {
+        try {
+            val balanceCard = view.findViewById<View>(R.id.wallet_balance)?.parent
+            val statsContainer = view.findViewById<View>(R.id.btn_withdraw)?.parent
+            val methodsSection = view.findViewById<androidx.recyclerview.widget.RecyclerView>(R.id.transactions_recycler)
+            
+            if (balanceCard != null) com.earnzy.app.utils.AnimationUtils.slideUpIn(balanceCard, delay = 0)
+            if (statsContainer != null) com.earnzy.app.utils.AnimationUtils.slideUpIn(statsContainer, delay = 100)
+            if (methodsSection != null) com.earnzy.app.utils.AnimationUtils.slideUpIn(methodsSection, delay = 200)
+        } catch (e: Exception) {
+            Log.e("WalletFragment", "Animation error", e)
+        }
     }
     
     override fun onResume() {

@@ -25,7 +25,7 @@ class HomeActivity : AppCompatActivity() {
         // Make status bar transparent
         setupTransparentStatusBar()
         
-        setContentView(R.layout.activity_home)
+        setContentView(R.layout.activity_home_advanced)
         
         bottomNav = findViewById(R.id.bottom_navigation)
         
