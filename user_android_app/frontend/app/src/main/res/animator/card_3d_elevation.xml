@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 3D Card elevation animator for premium touch feedback -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_pressed="true">
+        <objectAnimator
+            android:duration="150"
+            android:propertyName="translationZ"
+            android:valueTo="16dp"
+            android:valueType="floatType"
+            android:interpolator="@android:interpolator/decelerate_quad"/>
+    </item>
+    <item android:state_enabled="true">
+        <objectAnimator
+            android:duration="150"
+            android:propertyName="translationZ"
+            android:valueTo="2dp"
+            android:valueType="floatType"
+            android:interpolator="@android:interpolator/accelerate_quad"/>
+    </item>
+    <item>
+        <objectAnimator
+            android:duration="0"
+            android:propertyName="translationZ"
+            android:valueTo="0dp"
+            android:valueType="floatType"/>
+    </item>
+</selector>

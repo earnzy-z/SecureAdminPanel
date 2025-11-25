@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="16dp"
+    app:cardCornerRadius="24dp"
+    app:cardElevation="8dp"
+    app:strokeWidth="0dp">
+    
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="24dp"
+        android:background="@drawable/gradient_card_orange">
+        
+        <!-- Header -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="16dp">
+            
+            <com.airbnb.lottie.LottieAnimationView
+                android:id="@+id/leaderboard_icon"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                app:lottie_rawRes="@raw/trophy_animation"
+                app:lottie_autoPlay="true"
+                app:lottie_loop="true" />
+            
+            <com.google.android.material.textview.MaterialTextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="🏅 Leaderboard"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:textColor="@color/white"
+                android:layout_marginStart="12dp" />
+            
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/view_leaderboard"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="View All →"
+                android:textSize="13sp"
+                android:textColor="@color/white"
+                android:alpha="0.95"
+                android:padding="8dp"
+                android:background="@drawable/rounded_white_10"
+                android:backgroundTint="#40FFFFFF" />
+                android:alpha="0.9" />
+                
+        </LinearLayout>
+        
+        <!-- Your Rank Card -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:padding="16dp"
+            android:background="@drawable/rounded_white_bg_20"
+            android:layout_marginTop="16dp">
+            
+            <com.google.android.material.textview.MaterialTextView
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:text="#42"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:textColor="@color/white"
+                android:gravity="center"
+                android:background="@drawable/gradient_rank_badge" />
+            
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:layout_marginStart="12dp">
+                
+                <com.google.android.material.textview.MaterialTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Your Rank"
+                    android:textSize="12sp"
+                    android:textColor="@color/text_secondary" />
+                
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/user_rank_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="John Doe"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/text_primary" />
+                    
+            </LinearLayout>
+            
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/user_rank_points"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="1,234 pts"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:textColor="@color/primary" />
+                
+        </LinearLayout>
+        
+        <!-- Top 3 Preview -->
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Top Players"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            android:textColor="@color/white"
+            android:layout_marginTop="16dp"
+            android:alpha="0.9" />
+        
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="8dp">
+            
+            <!-- Rank 1 -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:padding="10dp"
+                android:background="@drawable/rounded_white_bg_20"
+                android:layout_marginBottom="6dp">
+                
+                <com.google.android.material.textview.MaterialTextView
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:text="🥇"
+                    android:textSize="18sp"
+                    android:gravity="center" />
+                
+                <com.google.android.material.textview.MaterialTextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Sarah M."
+                    android:textSize="13sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/text_primary"
+                    android:layout_marginStart="8dp" />
+                
+                <com.google.android.material.textview.MaterialTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="9,876 pts"
+                    android:textSize="12sp"
+                    android:textColor="@color/text_secondary" />
+                    
+            </LinearLayout>
+            
+            <!-- Rank 2 -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:padding="10dp"
+                android:background="@drawable/rounded_white_bg_20"
+                android:layout_marginBottom="6dp">
+                
+                <com.google.android.material.textview.MaterialTextView
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:text="🥈"
+                    android:textSize="18sp"
+                    android:gravity="center" />
+                
+                <com.google.android.material.textview.MaterialTextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Mike T."
+                    android:textSize="13sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/text_primary"
+                    android:layout_marginStart="8dp" />
+                
+                <com.google.android.material.textview.MaterialTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="8,543 pts"
+                    android:textSize="12sp"
+                    android:textColor="@color/text_secondary" />
+                    
+            </LinearLayout>
+            
+            <!-- Rank 3 -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:padding="10dp"
+                android:background="@drawable/rounded_white_bg_20">
+                
+                <com.google.android.material.textview.MaterialTextView
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:text="🥉"
+                    android:textSize="18sp"
+                    android:gravity="center" />
+                
+                <com.google.android.material.textview.MaterialTextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Emma L."
+                    android:textSize="13sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/text_primary"
+                    android:layout_marginStart="8dp" />
+                
+                <com.google.android.material.textview.MaterialTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="7,231 pts"
+                    android:textSize="12sp"
+                    android:textColor="@color/text_secondary" />
+                    
+            </LinearLayout>
+            
+        </LinearLayout>
+        
+    </LinearLayout>
+    
+</com.google.android.material.card.MaterialCardView>

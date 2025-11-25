@@ -1,0 +1,147 @@
+plugins {
+    id "com.android.application"
+    id "com.google.firebase.crashlytics"
+    id "com.google.gms.google-services"
+    id "kotlin-android"
+    id "org.jetbrains.kotlin.kapt"   
+}
+
+
+android {
+    namespace "com.earnzy.app"
+    compileSdk 35
+
+    defaultConfig {
+        applicationId "com.earnzy.app"
+        minSdk 24
+        targetSdk 35
+        versionCode 1
+        versionName "1.0"
+
+        buildConfigField "String", "API_BASE_URL", '"https://api.earnzy.com.in/"'
+
+        vectorDrawables.useSupportLibrary = true
+    }
+
+    signingConfigs {
+        release {
+            // Configure signing in local.properties or use environment variables
+            // storeFile file("path/to/your/keystore.jks")
+            // storePassword System.getenv("KEYSTORE_PASSWORD") ?: ""
+            // keyAlias System.getenv("KEY_ALIAS") ?: ""
+            // keyPassword System.getenv("KEY_PASSWORD") ?: ""
+        }
+
+        debug {
+            // Debug signing can use the default debug keystore
+        }
+    }
+
+    buildTypes {
+        release {
+            // signingConfig signingConfigs.release  // Configure in local.properties
+            minifyEnabled false
+            shrinkResources false
+            proguardFiles getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
+            debuggable false
+            jniDebuggable false
+        }
+        debug {
+            // Uses default debug signing
+            minifyEnabled false
+            shrinkResources false
+            debuggable true
+            jniDebuggable false
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_21
+        targetCompatibility JavaVersion.VERSION_21
+        coreLibraryDesugaringEnabled true
+    }
+
+    kotlinOptions {
+        jvmTarget = "21"
+        freeCompilerArgs += ["-Xjsr305=strict"]
+    }
+
+    buildFeatures {
+        viewBinding true
+        buildConfig true
+    }
+
+    packaging {
+        resources {
+            excludes += [
+                "META-INF/INDEX.LIST",
+                "META-INF/io.netty.versions.properties",
+                "META-INF/DEPENDENCIES",
+                "META-INF/LICENSE",
+                "META-INF/LICENSE.txt",
+                "META-INF/NOTICE",
+                "META-INF/NOTICE.txt"
+            ]
+        }
+    }
+
+    lint {
+        abortOnError false
+        checkReleaseBuilds false
+    }
+}
+
+dependencies {
+    // Desugaring support
+    coreLibraryDesugaring "com.android.tools:desugar_jdk_libs:2.1.4"
+
+    // AndroidX / UI
+    implementation "androidx.appcompat:appcompat:1.7.0"
+    implementation "com.google.android.material:material:1.12.0"
+    implementation "androidx.core:core:1.15.0"
+    implementation "androidx.core:core-ktx:1.15.0"
+    implementation "androidx.viewpager2:viewpager2:1.1.0"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.7"
+    implementation "androidx.lifecycle:lifecycle-runtime-ktx:2.8.7"
+    implementation "androidx.activity:activity-ktx:1.9.3"
+    implementation "androidx.core:core-splashscreen:1.0.1"
+
+    // Firebase (using BOM)
+    implementation platform("com.google.firebase:firebase-bom:33.7.0")
+    implementation "com.google.firebase:firebase-auth"
+    implementation "com.google.firebase:firebase-messaging"
+    implementation "com.google.firebase:firebase-analytics"
+    implementation "com.google.firebase:firebase-crashlytics"
+    implementation 'com.facebook.shimmer:shimmer:0.5.0'
+    // Glide
+    implementation "com.github.bumptech.glide:glide:4.16.0"
+    annotationProcessor "com.github.bumptech.glide:compiler:4.16.0"
+    kapt "com.github.bumptech.glide:compiler:4.16.0"
+    implementation 'de.hdodenhof:circleimageview:3.1.0'
+
+
+    // Networking
+    implementation "com.google.code.gson:gson:2.11.0"
+    implementation "com.android.volley:volley:1.2.1"
+    implementation "com.squareup.okhttp3:okhttp:4.12.0"
+    implementation "com.squareup.retrofit2:retrofit:2.11.0"
+    implementation "com.squareup.retrofit2:converter-gson:2.11.0"
+    implementation 'com.scottyab:rootbeer-lib:0.1.0'
+
+    // UI / Animations
+    implementation "com.airbnb.android:lottie:6.6.2"
+    
+    // Coroutines
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.9.0"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.9.0"
+    implementation "com.jakewharton.timber:timber:5.0.1"
+    implementation "com.google.android.gms:play-services-auth:21.2.0"
+    implementation "androidx.credentials:credentials:1.3.0"  
+    implementation "androidx.credentials:credentials-play-services-auth:1.3.0"
+    implementation "com.google.android.libraries.identity.googleid:googleid:1.1.1"
+    implementation "androidx.security:security-crypto:1.1.0-alpha06"
+    implementation "org.json:json:20240303"
+    implementation "com.google.crypto.tink:tink-android:1.15.0"
+    
+
+}

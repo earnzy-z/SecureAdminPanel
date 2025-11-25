@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+    app:cardCornerRadius="20dp"
+    app:cardElevation="6dp"
+    app:cardBackgroundColor="@color/white">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:id="@+id/achievement_card"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="20dp"
+            android:gravity="center">
+
+            <!-- Icon Container with Gradient Background -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/icon_container"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                app:cardCornerRadius="40dp"
+                app:cardElevation="4dp"
+                app:cardBackgroundColor="@drawable/gradient_card_background">
+
+                <ImageView
+                    android:id="@+id/achievement_icon"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/ic_achievement"
+                    android:contentDescription="Achievement Icon"
+                    app:tint="@android:color/white" />
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <TextView
+                android:id="@+id/achievement_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Achievement"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                android:textColor="@color/text_primary"
+                android:layout_marginTop="12dp"
+                android:gravity="center"
+                android:maxLines="2"
+                android:ellipsize="end" />
+
+            <TextView
+                android:id="@+id/achievement_description"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Description"
+                android:textSize="11sp"
+                android:textColor="@color/text_secondary"
+                android:layout_marginTop="4dp"
+                android:gravity="center"
+                android:maxLines="2"
+                android:ellipsize="end" />
+
+            <!-- Reward Badge -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="2dp"
+                app:cardBackgroundColor="@drawable/gradient_card_background">
+
+                <TextView
+                    android:id="@+id/achievement_reward"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="+100 ₹"
+                    android:textSize="13sp"
+                    android:textStyle="bold"
+                    android:textColor="@android:color/white"
+                    android:paddingStart="12dp"
+                    android:paddingEnd="12dp"
+                    android:paddingTop="6dp"
+                    android:paddingBottom="6dp" />
+
+            </com.google.android.material.card.MaterialCardView>
+
+        </LinearLayout>
+
+        <!-- Locked Overlay with Lock Icon -->
+        <FrameLayout
+            android:id="@+id/locked_overlay"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#C0000000"
+            android:visibility="gone">
+
+            <ImageView
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_lock"
+                android:alpha="0.7"
+                app:tint="@android:color/white" />
+
+        </FrameLayout>
+
+        <!-- Unlocked Badge -->
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/unlock_animation"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_gravity="top|end"
+            android:layout_margin="8dp"
+            android:visibility="gone"
+            app:lottie_rawRes="@raw/confetti"
+            app:lottie_autoPlay="true"
+            app:lottie_loop="false" />
+
+    </FrameLayout>
+
+</com.google.android.material.card.MaterialCardView>

@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/glass_white">
+
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@android:color/transparent"
+        android:elevation="0dp"
+        app:title="🏆 Achievements"
+        app:navigationIcon="@drawable/ic_arrow_back"
+        app:titleTextColor="@color/text_primary" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!-- Progress Summary Card -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/progress_card"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="16dp"
+                app:cardCornerRadius="20dp"
+                app:cardElevation="8dp"
+                app:cardBackgroundColor="@drawable/gradient_card_background">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="24dp">
+
+                    <com.airbnb.lottie.LottieAnimationView
+                        android:id="@+id/celebration_animation"
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
+                        android:visibility="gone"
+                        app:lottie_rawRes="@raw/confetti"
+                        app:lottie_autoPlay="true"
+                        app:lottie_loop="true"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintStart_toStartOf="parent" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:gravity="center"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Your Progress"
+                            android:textSize="16sp"
+                            android:textColor="@android:color/white"
+                            android:alpha="0.9" />
+
+                        <com.google.android.material.textview.MaterialTextView
+                            android:id="@+id/progress_text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="0/12 Unlocked"
+                            android:textSize="32sp"
+                            android:textStyle="bold"
+                            android:textColor="@android:color/white"
+                            android:layout_marginTop="8dp" />
+
+                        <com.google.android.material.textview.MaterialTextView
+                            android:id="@+id/progress_percent"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="0%"
+                            android:textSize="20sp"
+                            android:textColor="@android:color/white"
+                            android:layout_marginTop="4dp"
+                            android:alpha="0.9" />
+
+                        <com.google.android.material.textview.MaterialTextView
+                            android:id="@+id/total_achievements"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Total Rewards: 0 ₹"
+                            android:textSize="14sp"
+                            android:textColor="@android:color/white"
+                            android:layout_marginTop="12dp"
+                            android:alpha="0.85" />
+
+                    </LinearLayout>
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Achievements Grid -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/achievements_recycler"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="16dp"
+                android:paddingTop="0dp"
+                android:clipToPadding="false"
+                android:nestedScrollingEnabled="false" />
+
+        </LinearLayout>
+
+    </ScrollView>
+    
+    <!-- Loading Progress -->
+    <ProgressBar
+        android:id="@+id/loading_progress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:visibility="gone" />
+
+</LinearLayout>

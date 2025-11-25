@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/gradient_spin_wheel">
+
+    <!-- Back Button -->
+    <ImageView
+        android:id="@+id/back_button_spin"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:padding="12dp"
+        android:src="@drawable/ic_arrow_back"
+        android:tint="@color/white"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:clickable="true"
+        android:focusable="true"
+        android:layout_margin="8dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <!-- Title with Animated Badge -->
+    <LinearLayout
+        android:id="@+id/title_container"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginTop="24dp"
+        app:layout_constraintTop_toBottomOf="@id/back_button_spin"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Lucky Spin"
+            android:textSize="28sp"
+            android:textStyle="bold"
+            android:textColor="@color/white" />
+
+        <com.airbnb.lottie.LottieAnimationView
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_marginStart="8dp"
+            app:lottie_rawRes="@raw/reward_celebration"
+            app:lottie_autoPlay="true"
+            app:lottie_loop="true" />
+
+    </LinearLayout>
+
+    <!-- Spins Remaining Card -->
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/spins_card"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        app:cardCornerRadius="20dp"
+        app:cardElevation="8dp"
+        app:cardBackgroundColor="#40FFFFFF"
+        app:layout_constraintTop_toBottomOf="@id/title_container"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp"
+            android:paddingTop="12dp"
+            android:paddingBottom="12dp">
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_refresh"
+                android:tint="@color/white" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/spins_remaining_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="3 Spins Left"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="@color/white"
+                android:layout_marginStart="8dp" />
+
+        </LinearLayout>
+
+    </com.google.android.material.card.MaterialCardView>
+
+    <!-- Spin Wheel Container -->
+    <FrameLayout
+        android:id="@+id/wheel_container"
+        android:layout_width="320dp"
+        android:layout_height="320dp"
+        app:layout_constraintTop_toBottomOf="@id/spins_card"
+        app:layout_constraintBottom_toTopOf="@id/spin_button"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <!-- Wheel Background Shadow -->
+        <View
+            android:layout_width="320dp"
+            android:layout_height="320dp"
+            android:layout_gravity="center"
+            android:background="@drawable/circle_shadow"
+            android:alpha="0.3" />
+
+        <!-- The Wheel (Will be rotated programmatically) -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/spin_wheel"
+            android:layout_width="300dp"
+            android:layout_height="300dp"
+            android:layout_gravity="center"
+            app:cardCornerRadius="150dp"
+            app:cardElevation="16dp"
+            app:cardBackgroundColor="@color/white">
+
+            <!-- Wheel will be drawn with custom view or image -->
+            <ImageView
+                android:id="@+id/wheel_image"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="fitXY"
+                android:src="@drawable/spin_wheel_segments" />
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Center Button -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_gravity="center"
+            app:cardCornerRadius="40dp"
+            app:cardElevation="12dp"
+            app:cardBackgroundColor="@color/primary">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:gravity="center">
+
+                <ImageView
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:src="@drawable/ic_coin"
+                    android:tint="@color/white" />
+
+            </LinearLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Pointer Arrow at Top -->
+        <ImageView
+            android:layout_width="32dp"
+            android:layout_height="48dp"
+            android:layout_gravity="top|center_horizontal"
+            android:layout_marginTop="8dp"
+            android:src="@drawable/ic_arrow_down"
+            android:tint="@color/warning" />
+
+    </FrameLayout>
+
+    <!-- Spin Button -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/spin_button"
+        style="@style/Widget.Material3.Button.ElevatedButton"
+        android:layout_width="0dp"
+        android:layout_height="72dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginBottom="32dp"
+        android:text="SPIN NOW!"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:textColor="@color/white"
+        android:backgroundTint="@color/warning"
+        app:cornerRadius="36dp"
+        app:elevation="12dp"
+        app:icon="@drawable/ic_refresh"
+        app:iconGravity="textStart"
+        app:iconSize="28dp"
+        app:iconTint="@color/white"
+        app:layout_constraintBottom_toTopOf="@id/watch_ad_button"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- Watch Ad Button -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/watch_ad_button"
+        style="@style/Widget.Material3.Button.OutlinedButton"
+        android:layout_width="0dp"
+        android:layout_height="56dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginBottom="24dp"
+        android:text="Watch Ad for Extra Spin"
+        android:textColor="@color/white"
+        app:strokeColor="@color/white"
+        app:cornerRadius="28dp"
+        app:icon="@drawable/ic_video"
+        app:iconTint="@color/white"
+        app:iconGravity="textStart"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- Confetti Animation Overlay -->
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/confetti_animation"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        app:lottie_rawRes="@raw/confetti"
+        app:lottie_loop="false"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

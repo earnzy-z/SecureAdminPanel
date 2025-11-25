@@ -1,0 +1,132 @@
+<resources>
+    <!--
+    This file should be placed in `res/values-night/styles.xml`.
+    The style names (e.g., "AppTheme") are identical to your light theme.
+    Android automatically selects this file when the device is in Dark Mode.
+    -->
+
+    <!-- Base Application Theme with Material3 (Dark) -->
+    <style name="AppTheme" parent="Theme.Material3.Dark.NoActionBar">
+        <!-- Brand/Accent colors from light theme - these often remain the same -->
+        <item name="colorOnPrimary">@android:color/black</item>
+        <item name="colorPrimary">@color/primary</item>
+        <item name="colorPrimaryDark">@color/primary_dark</item>
+        <item name="colorAccent">@color/accent</item>
+        <item name="colorControlHighlight">@color/ripple_color</item>
+        <item name="colorControlNormal">@color/primary_Dark</item>
+
+        <!-- Secondary colors -->
+        <item name="colorSecondary">@color/accent</item>
+        <item name="colorSecondaryVariant">@color/accent_light</item>
+        <item name="colorOnSecondary">@android:color/white</item>
+
+        <!--
+         Background/Surface colors:
+         By *not* overriding android:colorBackground, colorSurface, or colorOnSurface,
+         we inherit the correct dark colors from the parent Theme.Material3.Dark.
+        -->
+
+        <!-- Navigation bar -->
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <!-- false = light icons, for a dark navigation bar -->
+        <item name="android:windowLightNavigationBar">false</item>
+
+        <!-- Window properties -->
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+        <item name="android:enforceNavigationBarContrast">false</item>
+        <!-- Use the theme's background attribute for the splash screen -->
+        <item name="android:windowSplashScreenBackground">?android:colorBackground</item>
+    </style>
+
+    <!-- FullScreen theme inherits from our new dark AppTheme -->
+    <style name="AppTheme.FullScreen" parent="AppTheme">
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+    </style>
+
+    <!-- This remains dark, so it's fine. -->
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.Material3.Dark" />
+
+    <!-- PopupOverlay should also be dark in a dark theme -->
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.Material3.Dark" />
+
+    <!-- DebugActivity inherits from our new dark AppTheme -->
+    <style name="AppTheme.DebugActivity" parent="AppTheme">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <!-- Animation styles don't need to change -->
+    <style name="DialogAnimation">
+        <item name="android:windowEnterAnimation">@anim/slide_in_up</item>
+        <item name="android:windowExitAnimation">@anim/slide_out_down</item>
+    </style>
+
+
+    <!-- BottomSheet theme needs to be dark -->
+    <style name="BottomSheetDialogTheme" parent="Theme.Material3.Dark.BottomSheetDialog">
+        <item name="bottomSheetStyle">@style/BottomSheetStyle</item>
+    </style>
+
+    <!-- BottomSheetStyle background needs to use a theme attribute for dark mode -->
+    <style name="BottomSheetStyle" parent="Widget.Material3.BottomSheet">
+        <!-- Use the theme's surface color attribute -->
+        <item name="android:background">?attr/colorSurface</item>
+        <item name="shapeAppearance">@style/ShapeAppearance.App.LargeComponent</item>
+    </style>
+
+    <!-- AlertDialogTheme should adapt to the dark theme -->
+    <style name="AlertDialogTheme" parent="ThemeOverlay.Material3.MaterialAlertDialog">
+        <!-- Primary colors are fine -->
+        <item name="colorPrimary">@color/primary</item>
+        <item name="colorPrimaryVariant">@color/primary_dark</item>
+        <!--
+        Remove hard-coded text/background colors.
+        The parent theme will now correctly apply dark-theme-aware
+        text and background colors.
+        -->
+        <!-- <item name="android:textColorPrimary">@android:color/black</item> -->
+        <!-- <item name="android:background">@android:color/white</item> -->
+    </style>
+
+    <!-- Theme-independent styles can remain identical to the light theme file -->
+    <style name="TutorialDotsIndicator" parent="Widget.Material3.TabLayout">
+        <item name="tabIndicatorHeight">0dp</item>
+        <item name="tabBackground">@drawable/tab_selector</item>
+        <item name="tabPaddingStart">0dp</item>
+        <item name="tabPaddingEnd">0dp</item>
+        <item name="tabPaddingTop">0dp</item>
+        <item name="tabPaddingBottom">0dp</item>
+        <item name="tabIndicatorGravity">center</item>
+        <item name="tabGravity">center</item>
+        <item name="tabContentStart">0dp</item>
+    </style>
+
+    <style name="FadeAnimation">
+        <item name="android:windowEnterAnimation">@android:anim/fade_in</item>
+        <item name="android:windowExitAnimation">@android:anim/fade_out</item>
+    </style>
+
+    <!-- Shape Appearances -->
+    <style name="ShapeAppearance.App.SmallComponent" parent="ShapeAppearance.Material3.SmallComponent">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">12dp</item>
+    </style>
+
+    <style name="ShapeAppearance.App.MediumComponent" parent="ShapeAppearance.Material3.MediumComponent">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">16dp</item>
+    </style>
+
+    <style name="ShapeAppearance.App.LargeComponent" parent="ShapeAppearance.Material3.LargeComponent">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">24dp</item>
+    </style>
+
+    <!-- Bottom Navigation Active Indicator -->
+    <style name="BottomNavActiveIndicator" parent="Widget.Material3.BottomNavigationView.ActiveIndicator">
+        <item name="android:color">@color/primary_light</item>
+        <item name="shapeAppearance">@style/ShapeAppearance.App.SmallComponent</item>
+    </style>
+
+</resources>

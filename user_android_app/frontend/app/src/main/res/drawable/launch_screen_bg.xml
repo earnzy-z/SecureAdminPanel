@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Background with rounded corners -->
+    <item>
+        <shape android:shape="rectangle">
+            <corners android:radius="32dp"/> <!-- corner radius -->
+            <solid android:color="@color/black"/> <!-- background color -->
+        </shape>
+    </item>
+
+    <!-- Centered, scaled app icon -->
+    <item>
+        <scale
+            android:scaleWidth="150%"
+            android:scaleHeight="150%"
+            android:gravity="center">
+            <bitmap
+                android:src="@drawable/app_ico"
+                android:antialias="true"/>
+        </scale>
+    </item>
+
+</layer-list>

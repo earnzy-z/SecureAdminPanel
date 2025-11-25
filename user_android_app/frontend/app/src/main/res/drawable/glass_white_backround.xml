@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- soft shadow -->
+    <item android:top="2dp">
+        <shape android:shape="rectangle">
+            <solid android:color="#33000000"/>
+            <corners android:radius="16dp"/>
+        </shape>
+    </item>
+
+    <!-- main frosted background -->
+    <item>
+        <shape android:shape="rectangle">
+            <gradient
+                android:angle="270"
+                android:startColor="#CCFFFFFF"
+                android:centerColor="#B3FFFFFF"
+                android:endColor="#99FFFFFF"
+                android:type="linear"/>
+            <corners android:radius="16dp"/>
+            <stroke android:width="1dp" android:color="#55FFFFFF"/>
+        </shape>
+    </item>
+
+    <!-- top highlight (was 50%, now ~half height = use dp) -->
+    <item>
+        <inset android:bottom="60dp"> <!-- Replace % with dp -->
+            <shape android:shape="rectangle">
+                <gradient
+                    android:angle="270"
+                    android:startColor="#30FFFFFF"
+                    android:endColor="#00FFFFFF"
+                    android:type="linear"/>
+                <corners android:topLeftRadius="16dp"
+                         android:topRightRadius="16dp"
+                         android:bottomLeftRadius="0dp"
+                         android:bottomRightRadius="0dp"/>
+            </shape>
+        </inset>
+    </item>
+
+</layer-list>

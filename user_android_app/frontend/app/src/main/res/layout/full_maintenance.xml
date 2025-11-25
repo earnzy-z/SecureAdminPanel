@@ -1,0 +1,85 @@
+<LinearLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:orientation="vertical">
+	<LinearLayout
+		android:id="@+id/linear1"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:background="#FFFFFF"
+		android:gravity="center_horizontal|center_vertical"
+		android:orientation="vertical"
+		android:layout_gravity="center_horizontal|center_vertical">
+		<TextView
+			android:id="@+id/textview7"
+			android:layout_width="1dp"
+			android:layout_height="20dp"
+			android:padding="8dp"
+			android:textSize="12sp"
+			android:textColor="#000000" />
+		<TextView
+			android:id="@+id/tittle"
+			android:layout_width="wrap_content"
+			android:layout_height="60dp"
+			android:padding="8dp"
+			android:text="MAINTENANCE ALERT 🚧"
+			android:textSize="20sp"
+			android:textStyle="bold"
+			android:textColor="#000000" />
+		<com.airbnb.lottie.LottieAnimationView
+			android:id="@+id/lottie1"
+			android:layout_width="match_parent"
+			android:layout_height="400dp"
+			android:scaleType="fitCenter"
+			android:layout_centerInParent="true"
+			app:lottie_fileName="maintenance.json"
+			app:lottie_loop="true"
+			app:lottie_autoPlay="true" />
+		<TextView
+			android:id="@+id/message"
+			android:layout_width="320dp"
+			android:layout_height="wrap_content"
+			android:padding="8dp"
+			android:gravity="center_horizontal|center_vertical"
+			android:text="We are currently performing scheduled maintenance"
+			android:textSize="19sp"
+			android:textStyle="bold"
+			android:textColor="#000000" />
+        <TextView
+			android:id="@+id/start_time"
+			android:layout_width="320dp"
+			android:layout_height="wrap_content"
+			android:padding="8dp"
+			android:gravity="center_horizontal|center_vertical"
+			android:text="earnzy also make safe for your credentials and rewards"
+			android:textSize="13sp"
+			android:textStyle="bold"
+			android:textColor="#000000" />
+		<TextView
+			android:id="@+id/end_time"
+			android:layout_width="1dp"
+			android:layout_height="25dp"
+			android:padding="8dp"
+			android:textSize="12sp"
+			android:textColor="#000000" />
+		<Button
+			android:id="@+id/button1"
+			android:layout_width="300dp"
+			android:layout_height="55dp"
+			android:padding="8dp"
+			android:text="Exit To Earnzy"
+			android:textSize="18sp"
+			android:textStyle="bold|italic"
+			android:textColor="#000000" />
+		<TextView
+			android:id="@+id/textview5"
+			android:layout_width="1dp"
+			android:layout_height="12dp"
+			android:padding="8dp"
+			android:textSize="12sp"
+			android:textColor="#000000" />
+	</LinearLayout>
+</LinearLayout>

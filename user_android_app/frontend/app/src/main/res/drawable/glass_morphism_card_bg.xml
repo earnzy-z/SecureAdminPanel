@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Premium Glass Morphism Effect -->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    
+    <!-- Outer glow -->
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="#10000000"/>
+            <corners android:radius="24dp"/>
+        </shape>
+    </item>
+    
+    <!-- Main glass background -->
+    <item android:top="1dp" android:bottom="1dp" android:left="1dp" android:right="1dp">
+        <shape android:shape="rectangle">
+            <gradient
+                android:angle="135"
+                android:startColor="#F0FFFFFF"
+                android:centerColor="#E8FFFFFF"
+                android:endColor="#D0FFFFFF"
+                android:type="linear"/>
+            <corners android:radius="24dp"/>
+        </shape>
+    </item>
+    
+    <!-- Frosted glass border -->
+    <item>
+        <shape android:shape="rectangle">
+            <stroke android:width="1.5dp" android:color="#40FFFFFF"/>
+            <corners android:radius="24dp"/>
+        </shape>
+    </item>
+    
+    <!-- Top highlight -->
+    <item android:top="1dp" android:left="1dp" android:right="1dp" android:bottom="80dp">
+        <shape android:shape="rectangle">
+            <gradient
+                android:angle="90"
+                android:startColor="#50FFFFFF"
+                android:endColor="#00FFFFFF"
+                android:type="linear"/>
+            <corners android:topLeftRadius="24dp" android:topRightRadius="24dp"/>
+        </shape>
+    </item>
+    
+</layer-list>

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  android:orientation="vertical" android:padding="12dp"
+  android:layout_width="match_parent" android:layout_height="wrap_content">
+
+  <TextView
+    android:id="@+id/task_title"
+    android:text="Task title"
+    android:textStyle="bold"
+    android:textSize="16sp"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"/>
+
+  <TextView
+    android:id="@+id/task_desc"
+    android:text="Task description"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="4dp"/>
+
+  <EditText
+    android:id="@+id/task_proof"
+    android:hint="Paste proof (link or note)"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="8dp"/>
+
+  <Button
+    android:id="@+id/task_submit"
+    android:text="Submit"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="8dp"/>
+</LinearLayout>

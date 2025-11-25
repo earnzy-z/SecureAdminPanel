@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Style for when the button is pressed -->
+    <item android:state_pressed="true">
+        <objectAnimator
+            android:duration="100"
+            android:propertyName="translationZ"
+            android:valueTo="8dp" />
+    </item>
+
+    <!-- Default style for when the button is not pressed -->
+    <item>
+        <objectAnimator
+            android:duration="100"
+            android:propertyName="translationZ"
+            android:valueTo="0dp" />
+    </item>
+
+</selector>

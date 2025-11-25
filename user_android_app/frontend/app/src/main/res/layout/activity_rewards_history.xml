@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/glass_white">
+
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@android:color/transparent"
+        android:elevation="0dp"
+        app:title="💰 Transaction History"
+        app:navigationIcon="@drawable/ic_arrow_back"
+        app:titleTextColor="@color/text_primary" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!-- Summary Card -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/summary_card"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="16dp"
+                app:cardCornerRadius="20dp"
+                app:cardElevation="8dp"
+                app:cardBackgroundColor="@drawable/gradient_card_background">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="24dp">
+
+                    <com.airbnb.lottie.LottieAnimationView
+                        android:id="@+id/celebration_animation"
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:visibility="gone"
+                        app:lottie_rawRes="@raw/reward_celebration"
+                        app:lottie_autoPlay="true"
+                        app:lottie_loop="false"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:weightSum="3"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintStart_toStartOf="parent">
+
+                        <!-- Total Earned -->
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical"
+                            android:gravity="center">
+
+                            <com.airbnb.lottie.LottieAnimationView
+                                android:layout_width="36dp"
+                                android:layout_height="36dp"
+                                app:lottie_rawRes="@raw/coin"
+                                app:lottie_autoPlay="true"
+                                app:lottie_loop="true" />
+
+                            <com.google.android.material.textview.MaterialTextView
+                                android:id="@+id/total_earned_text"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="₹0"
+                                android:textSize="22sp"
+                                android:textStyle="bold"
+                                android:textColor="@android:color/white"
+                                android:layout_marginTop="4dp" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Total Earned"
+                                android:textSize="11sp"
+                                android:textColor="@android:color/white"
+                                android:alpha="0.9"
+                                android:layout_marginTop="2dp" />
+
+                        </LinearLayout>
+
+                        <!-- Total Withdrawn -->
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical"
+                            android:gravity="center">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="💸"
+                                android:textSize="32sp" />
+
+                            <com.google.android.material.textview.MaterialTextView
+                                android:id="@+id/total_withdrawn_text"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="₹0"
+                                android:textSize="22sp"
+                                android:textStyle="bold"
+                                android:textColor="@android:color/white"
+                                android:layout_marginTop="4dp" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Withdrawn"
+                                android:textSize="11sp"
+                                android:textColor="@android:color/white"
+                                android:alpha="0.9"
+                                android:layout_marginTop="2dp" />
+
+                        </LinearLayout>
+
+                        <!-- Balance -->
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical"
+                            android:gravity="center">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="💎"
+                                android:textSize="32sp" />
+
+                            <com.google.android.material.textview.MaterialTextView
+                                android:id="@+id/balance_text"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="₹0"
+                                android:textSize="22sp"
+                                android:textStyle="bold"
+                                android:textColor="@android:color/white"
+                                android:layout_marginTop="4dp" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Balance"
+                                android:textSize="11sp"
+                                android:textColor="@android:color/white"
+                                android:alpha="0.9"
+                                android:layout_marginTop="2dp" />
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Tabs -->
+            <com.google.android.material.tabs.TabLayout
+                android:id="@+id/tab_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:background="@android:color/transparent"
+                app:tabTextColor="@color/text_secondary"
+                app:tabSelectedTextColor="@color/gradient_start"
+                app:tabIndicatorColor="@color/gradient_start"
+                app:tabMode="fixed" />
+
+            <!-- Transactions List -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/history_recycler"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="16dp"
+                android:paddingTop="8dp"
+                android:clipToPadding="false"
+                android:nestedScrollingEnabled="false" />
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</LinearLayout>

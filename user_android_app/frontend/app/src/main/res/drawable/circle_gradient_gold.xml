@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Gold gradient for icon background -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="oval">
+    <gradient
+        android:angle="135"
+        android:startColor="#FFD700"
+        android:centerColor="#FFC107"
+        android:endColor="#FF9800"
+        android:type="linear"/>
+    <size android:width="96dp" android:height="96dp"/>
+</shape>

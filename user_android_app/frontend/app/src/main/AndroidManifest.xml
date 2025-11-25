@@ -1,0 +1,241 @@
+<manifest
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    <uses-permission android:name="android.permission.USE_BIOMETRIC" />
+    <uses-permission android:name="android.permission.USE_FINGERPRINT" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.READ_PHONE_NUMBERS" />
+    <uses-permission android:name="android.permission.RECEIVE_SMS" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:usesCleartextTraffic="true"
+        android:theme="@style/AppTheme"
+        android:enableOnBackInvokedCallback="true">
+
+        <activity
+            android:name=".MainActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden|smallestScreenSize|screenLayout"
+            android:hardwareAccelerated="true"
+            android:supportsPictureInPicture="true"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity>
+
+        <!-- Other activities (exported=false since no intent filters) -->
+        <activity
+            android:name=".PopupInternetActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden|smallestScreenSize|screenLayout"
+            android:hardwareAccelerated="true"
+            android:supportsPictureInPicture="true"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden"
+            android:exported="false" />
+
+        <activity
+            android:name=".PopupVpnActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden|smallestScreenSize|screenLayout"
+            android:hardwareAccelerated="true"
+            android:supportsPictureInPicture="true"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden"
+            android:exported="false" />
+
+        <activity
+            android:name=".OtpVerificationActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+            android:windowSoftInputMode="adjustResize" />
+
+        <activity
+            android:name=".FullRootActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden|smallestScreenSize|screenLayout"
+            android:hardwareAccelerated="true"
+            android:supportsPictureInPicture="true"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden"
+            android:exported="false" />
+
+
+        <activity
+            android:name=".LoginActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden|smallestScreenSize|screenLayout"
+            android:hardwareAccelerated="true"
+            android:supportsPictureInPicture="true"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden"
+            android:exported="false" >
+            <intent-filter>
+               <action android:name="android.intent.action.VIEW" />
+               <category android:name="android.intent.category.DEFAULT" />
+               <category android:name="android.intent.category.BROWSABLE" />
+               <data android:scheme="https" android:host="-refer.earnzy.workers.dev" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".BanActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden|smallestScreenSize|screenLayout"
+            android:hardwareAccelerated="true"
+            android:supportsPictureInPicture="true"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden"
+            android:exported="false" />
+        
+        <activity
+           android:name=".FullMaintenanceActivity"
+           android:configChanges="orientation|screenSize|keyboardHidden|smallestScreenSize|screenLayout"
+           android:hardwareAccelerated="true"
+           android:supportsPictureInPicture="true"
+           android:screenOrientation="portrait"
+           android:windowSoftInputMode="stateHidden"
+           android:exported="false" />
+
+        <activity
+            android:name=".HomeActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden|smallestScreenSize|screenLayout"
+            android:hardwareAccelerated="true"
+            android:supportsPictureInPicture="true"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden"
+            android:exported="false" />
+
+        <activity
+            android:name=".LoadingActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden|smallestScreenSize|screenLayout"
+            android:hardwareAccelerated="true"
+            android:supportsPictureInPicture="true"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden"
+            android:exported="false" />
+
+        <activity
+            android:name=".TutorialActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden|smallestScreenSize|screenLayout"
+            android:hardwareAccelerated="true"
+            android:supportsPictureInPicture="true"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden"
+            android:exported="false" />
+
+        <activity
+            android:name=".DebugActivity"
+            android:screenOrientation="portrait"
+            android:exported="false" />
+
+        <activity
+            android:name=".Activity.SupportChatActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden|smallestScreenSize|screenLayout"
+            android:hardwareAccelerated="true"
+            android:supportsPictureInPicture="true"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden"
+            android:exported="false"/>
+
+        <!-- New Advanced Activities -->
+        <activity
+            android:name=".Activity.SpinWheelAdvancedActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden|smallestScreenSize|screenLayout"
+            android:hardwareAccelerated="true"
+            android:screenOrientation="portrait"
+            android:exported="false"/>
+
+        <activity
+            android:name=".Activity.ScratchCardAdvancedActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden|smallestScreenSize|screenLayout"
+            android:hardwareAccelerated="true"
+            android:screenOrientation="portrait"
+            android:exported="false"/>
+
+        <activity
+            android:name=".Activity.AchievementsAdvancedActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden|smallestScreenSize|screenLayout"
+            android:hardwareAccelerated="true"
+            android:screenOrientation="portrait"
+            android:exported="false"/>
+
+        <activity
+            android:name=".Activity.TutorialAdvancedActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden|smallestScreenSize|screenLayout"
+            android:hardwareAccelerated="true"
+            android:screenOrientation="portrait"
+            android:exported="false"/>
+            
+
+        <!-- Firebase and Google Services -->
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
+
+        <provider
+            android:name="com.google.firebase.provider.FirebaseInitProvider"
+            android:authorities="com.earnzy.app.firebaseinitprovider"
+            android:exported="false"
+            android:initOrder="100" />
+
+        <service
+            android:name="com.google.firebase.components.ComponentDiscoveryService"
+            android:exported="false">
+            <meta-data
+                android:name="com.google.firebase.components:com.google.firebase.auth.FirebaseAuthRegistrar"
+                android:value="com.google.firebase.components.ComponentRegistrar" />
+            <meta-data
+                android:name="com.google.firebase.components:com.google.firebase.database.DatabaseRegistrar"
+                android:value="com.google.firebase.components.ComponentRegistrar" />
+            <meta-data
+                android:name="com.google.firebase.components:com.google.firebase.iid.Registrar"
+                android:value="com.google.firebase.components.ComponentRegistrar" />
+        </service>
+
+        <!-- Firebase Messaging Service (kept MyFirebaseMessagingService, removed FCMService) -->
+        <service
+            android:name=".MyFirebaseService"
+            android:exported="false">
+           <intent-filter>
+                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
+           </intent-filter>
+        </service>
+
+        <!-- Firebase Instance ID Receiver -->
+        <receiver
+            android:name="com.google.firebase.iid.FirebaseInstanceIdReceiver"
+            android:exported="true"
+            android:permission="com.google.android.c2dm.permission.SEND">
+            <intent-filter>
+                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+            </intent-filter>
+        </receiver>
+
+        <!-- Google Sign-In Activity -->
+        <activity
+            android:name="com.google.android.gms.auth.api.signin.internal.SignInHubActivity"
+            android:excludeFromRecents="true"
+            android:exported="false"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+
+        <service
+            android:name="com.google.android.gms.auth.api.signin.RevocationBoundService"
+            android:exported="true"
+            android:permission="com.google.android.gms.auth.api.signin.permission.REVOCATION_NOTIFICATION" />
+
+        <!-- Optional legacy HTTP library -->
+        <uses-library
+            android:name="org.apache.http.legacy"
+            android:required="false" />
+
+    </application>
+</manifest>

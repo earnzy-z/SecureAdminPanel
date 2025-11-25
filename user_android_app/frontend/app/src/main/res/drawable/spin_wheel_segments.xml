@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="300dp"
+    android:height="300dp"
+    android:viewportWidth="300"
+    android:viewportHeight="300">
+    
+    <!-- Background Circle -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M150,150m-145,0a145,145 0,1 1,290 0a145,145 0,1 1,-290 0" />
+    
+    <!-- Outer Ring -->
+    <path
+        android:fillColor="#FFD700"
+        android:strokeColor="#FFA500"
+        android:strokeWidth="4"
+        android:pathData="M150,150m-140,0a140,140 0,1 1,280 0a140,140 0,1 1,-280 0" />
+    
+    <!-- Segment 1 (50 coins) -->
+    <path
+        android:fillColor="#FF6B6B"
+        android:pathData="M150,150 L150,10 A140,140 0 0,1 237.28,37.28 Z" />
+    
+    <!-- Segment 2 (100 coins) -->
+    <path
+        android:fillColor="#4ECDC4"
+        android:pathData="M150,150 L237.28,37.28 A140,140 0 0,1 287.28,112.72 Z" />
+    
+    <!-- Segment 3 (150 coins) -->
+    <path
+        android:fillColor="#95E1D3"
+        android:pathData="M150,150 L287.28,112.72 A140,140 0 0,1 290,150 Z" />
+    
+    <!-- Segment 4 (200 coins) -->
+    <path
+        android:fillColor="#F38181"
+        android:pathData="M150,150 L290,150 A140,140 0 0,1 287.28,187.28 Z" />
+    
+    <!-- Segment 5 (250 coins) -->
+    <path
+        android:fillColor="#AA96DA"
+        android:pathData="M150,150 L287.28,187.28 A140,140 0 0,1 237.28,262.72 Z" />
+    
+    <!-- Segment 6 (500 coins) -->
+    <path
+        android:fillColor="#FCBAD3"
+        android:pathData="M150,150 L237.28,262.72 A140,140 0 0,1 150,290 Z" />
+    
+    <!-- Segment 7 (1000 coins) -->
+    <path
+        android:fillColor="#FFFFD2"
+        android:pathData="M150,150 L150,290 A140,140 0 0,1 62.72,262.72 Z" />
+    
+    <!-- Segment 8 (2000 coins) -->
+    <path
+        android:fillColor="#A8E6CF"
+        android:pathData="M150,150 L62.72,262.72 A140,140 0 0,1 12.72,187.28 Z" />
+    
+    <!-- Center Circle -->
+    <path
+        android:fillColor="#FFD700"
+        android:strokeColor="#FFA500"
+        android:strokeWidth="3"
+        android:pathData="M150,150m-30,0a30,30 0,1 1,60 0a30,30 0,1 1,-60 0" />
+    
+    <!-- Divider Lines -->
+    <path
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="2"
+        android:pathData="M150,10 L150,150" />
+    <path
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="2"
+        android:pathData="M237.28,37.28 L150,150" />
+    <path
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="2"
+        android:pathData="M287.28,112.72 L150,150" />
+    <path
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="2"
+        android:pathData="M290,150 L150,150" />
+    <path
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="2"
+        android:pathData="M287.28,187.28 L150,150" />
+    <path
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="2"
+        android:pathData="M237.28,262.72 L150,150" />
+    <path
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="2"
+        android:pathData="M150,290 L150,150" />
+    <path
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="2"
+        android:pathData="M62.72,262.72 L150,150" />
+</vector>

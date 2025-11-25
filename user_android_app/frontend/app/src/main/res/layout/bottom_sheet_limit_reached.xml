@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+     xmlns:android="http://schemas.android.com/apk/res/android"
+     xmlns:app="http://schemas.android.com/apk/res-auto"
+     android:layout_height="wrap_content"
+     android:layout_width="match_parent"
+     android:background="@drawable/bottom_sheet_background"
+     android:padding="24dp">
+
+    <View
+         android:layout_height="4dp"
+         android:layout_width="40dp"
+         android:layout_marginBottom="16dp"
+         android:background="@drawable/bottom_sheet_handle"
+         app:layout_constraintTop_toTopOf="parent"
+         app:layout_constraintStart_toStartOf="parent"
+         app:layout_constraintEnd_toEndOf="parent"
+         android:id="@+id/handle_bar" />
+
+    <com.airbnb.lottie.LottieAnimationView
+         android:layout_height="80dp"
+         android:layout_width="80dp"
+         app:lottie_rawRes="@raw/error_animation"
+         app:layout_constraintStart_toStartOf="parent"
+         app:layout_constraintEnd_toEndOf="parent"
+         android:layout_marginTop="16dp"
+         app:layout_constraintTop_toBottomOf="@id/handle_bar"
+         android:id="@+id/warning_animation"
+         app:lottie_autoPlay="true"
+         app:lottie_loop="true" />
+
+    <com.google.android.material.textview.MaterialTextView
+         android:layout_height="wrap_content"
+         android:layout_width="wrap_content"
+         app:layout_constraintStart_toStartOf="parent"
+         android:textSize="22sp"
+         android:textColor="@color/text_primary"
+         app:layout_constraintEnd_toEndOf="parent"
+         android:layout_marginTop="16dp"
+         app:layout_constraintTop_toBottomOf="@id/warning_animation"
+         android:id="@+id/limit_title"
+         android:text="Account Limit Reached!"
+         android:textStyle="bold" />
+
+    <com.google.android.material.textview.MaterialTextView
+         android:layout_height="wrap_content"
+         android:layout_width="0dp"
+         android:gravity="center"
+         app:layout_constraintStart_toStartOf="parent"
+         android:textSize="15sp"
+         android:textColor="@color/text_secondary"
+         app:layout_constraintEnd_toEndOf="parent"
+         android:layout_marginTop="12dp"
+         app:layout_constraintTop_toBottomOf="@id/limit_title"
+         android:lineSpacingExtra="4dp"
+         android:id="@+id/limit_message"
+         android:text="You've reached your Account limit please login beliw contain accounts!" />
+
+    <com.google.android.material.card.MaterialCardView
+         android:layout_height="wrap_content"
+         android:layout_width="match_parent"
+         app:cardElevation="4dp"
+         app:cardBackgroundColor="@color/glass_background"
+         android:layout_marginTop="20dp"
+         app:layout_constraintTop_toBottomOf="@id/limit_message"
+         app:cardCornerRadius="16dp"
+         android:id="@+id/progress_card">
+
+        <LinearLayout
+             android:layout_height="wrap_content"
+             android:layout_width="match_parent"
+             android:padding="16dp"
+             android:orientation="vertical">
+
+            <LinearLayout
+                 android:layout_height="wrap_content"
+                 android:layout_width="match_parent"
+                 android:gravity="center_vertical"
+                 android:orientation="horizontal">
+
+            </LinearLayout>
+
+            <com.google.android.material.progressindicator.LinearProgressIndicator
+                 android:layout_height="wrap_content"
+                 android:layout_width="match_parent"
+                 android:max="100"
+                 app:trackColor="@color/light_gray"
+                 app:trackCornerRadius="4dp"
+                 android:layout_marginTop="8dp"
+                 android:progress="100"
+                 android:id="@+id/daily_progress"
+                 app:indicatorColor="@color/primary" />
+
+            <LinearLayout
+                 android:layout_height="wrap_content"
+                 android:layout_width="match_parent"
+                 android:visibility="gone"
+                 android:orientation="vertical"
+                 android:layout_marginTop="12dp"
+                 android:id="@+id/accounts_container">
+
+            </LinearLayout>
+
+            <ProgressBar
+                 android:layout_height="wrap_content"
+                 android:layout_width="wrap_content"
+                 android:visibility="gone"
+                 android:layout_marginTop="12dp"
+                 android:id="@+id/accounts_progressbar"
+                 android:layout_gravity="center_horizontal" />
+
+        </LinearLayout>
+
+    </com.google.android.material.card.MaterialCardView>
+
+    <com.google.android.material.card.MaterialCardView
+         android:layout_height="wrap_content"
+         android:layout_width="match_parent"
+         app:cardElevation="0dp"
+         app:cardBackgroundColor="@android:color/transparent"
+         android:layout_marginTop="16dp"
+         app:layout_constraintTop_toBottomOf="@id/progress_card"
+         app:cardCornerRadius="16dp"
+         android:id="@+id/timer_card" />
+
+    <LinearLayout
+         android:layout_height="wrap_content"
+         android:layout_width="match_parent"
+         android:gravity="center"
+         android:orientation="horizontal"
+         android:layout_marginTop="20dp"
+         app:layout_constraintTop_toBottomOf="@id/timer_card">
+
+        <com.google.android.material.button.MaterialButton
+             android:layout_height="56dp"
+             android:layout_width="0dp"
+             android:background="@drawable/gradient_card_background"
+             android:textSize="14sp"
+             app:cornerRadius="14dp"
+             style="@style/Widget.Material3.Button.TonalButton"
+             android:layout_marginStart="8dp"
+             android:layout_weight="1"
+             android:id="@+id/close_button"
+             android:text="Got It" />
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

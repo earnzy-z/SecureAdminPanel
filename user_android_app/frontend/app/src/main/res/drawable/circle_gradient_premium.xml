@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Premium gradient circle for icons -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="oval">
+    <gradient
+        android:angle="135"
+        android:startColor="#6366F1"
+        android:centerColor="#8B5CF6"
+        android:endColor="#A78BFA"
+        android:type="linear"/>
+    <size android:width="64dp" android:height="64dp"/>
+</shape>

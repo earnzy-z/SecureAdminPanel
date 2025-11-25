@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Radial glow effect -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="oval">
+    <gradient
+        android:type="radial"
+        android:gradientRadius="60dp"
+        android:startColor="#60FFD700"
+        android:centerColor="#30FFC107"
+        android:endColor="#00FF9800"/>
+</shape>

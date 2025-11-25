@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+     xmlns:android="http://schemas.android.com/apk/res/android"
+     xmlns:app="http://schemas.android.com/apk/res-auto"
+     xmlns:tools="http://schemas.android.com/tools"
+     android:layout_height="wrap_content"
+     android:layout_width="match_parent"
+     android:paddingEnd="16dp"
+     android:background="@color/white"
+     android:paddingBottom="12dp"
+     android:paddingStart="16dp"
+     android:id="@+id/top_bar_container"
+     android:paddingTop="40dp">
+
+    <com.google.android.material.card.MaterialCardView
+         android:layout_height="50dp"
+         android:layout_width="50dp"
+         android:clickable="true"
+         app:strokeColor="#F0F0F0"
+         app:cardElevation="4dp"
+         app:layout_constraintBottom_toBottomOf="parent"
+         android:focusable="true"
+         android:foreground="?attr/selectableItemBackground"
+         app:layout_constraintTop_toTopOf="parent"
+         app:layout_constraintStart_toStartOf="parent"
+         app:strokeWidth="1dp"
+         app:cardCornerRadius="25dp"
+         android:id="@+id/profile_avatar_card">
+
+        <com.airbnb.lottie.LottieAnimationView
+             android:layout_height="match_parent"
+             android:layout_width="match_parent"
+             android:background="#F5F5F5"
+             android:scaleX="1.4"
+             android:scaleY="1.4"
+             app:lottie_url="https://earnzy-8e714.firebaseapp.com/animation/profile.json"
+             android:id="@+id/profile_avatar"
+             android:layout_gravity="center"
+             app:lottie_autoPlay="true"
+             app:lottie_loop="true" />
+
+    </com.google.android.material.card.MaterialCardView>
+
+    <LinearLayout
+         android:layout_height="wrap_content"
+         android:layout_width="0dp"
+         android:layout_marginEnd="8dp"
+         android:gravity="center_vertical"
+         app:layout_constraintTop_toTopOf="@id/profile_avatar_card"
+         android:orientation="vertical"
+         app:layout_constraintEnd_toStartOf="@id/actions_container"
+         app:layout_constraintStart_toEndOf="@id/profile_avatar_card"
+         app:layout_constraintBottom_toBottomOf="@id/profile_avatar_card"
+         android:layout_marginStart="12dp"
+         android:id="@+id/text_container">
+
+        <com.google.android.material.textview.MaterialTextView
+             android:layout_height="wrap_content"
+             android:layout_width="wrap_content"
+             android:textSize="12sp"
+             android:fontFamily="sans-serif-medium"
+             android:textColor="#757575"
+             android:id="@+id/greeting_text"
+             android:text="Good Morning," />
+
+        <com.google.android.material.textview.MaterialTextView
+             android:layout_height="wrap_content"
+             android:layout_width="wrap_content"
+             android:ellipsize="end"
+             android:textSize="16sp"
+             android:textColor="@color/black"
+             android:maxLines="1"
+             android:id="@+id/user_name_text"
+             android:text="User"
+             android:textStyle="bold" />
+
+    </LinearLayout>
+
+    <LinearLayout
+         android:layout_height="wrap_content"
+         android:layout_width="wrap_content"
+         android:gravity="center_vertical"
+         app:layout_constraintTop_toTopOf="parent"
+         android:orientation="horizontal"
+         app:layout_constraintEnd_toEndOf="parent"
+         app:layout_constraintBottom_toBottomOf="parent"
+         android:id="@+id/actions_container">
+
+        <FrameLayout
+             android:layout_height="40dp"
+             android:layout_width="40dp"
+             android:layout_marginEnd="8dp"
+             android:clickable="true"
+             android:focusable="true"
+             android:id="@+id/notification_bell"
+             android:foreground="?attr/selectableItemBackgroundBorderless">
+
+            <com.airbnb.lottie.LottieAnimationView
+                 android:layout_height="28dp"
+                 android:layout_width="28dp"
+                 app:lottie_rawRes="@raw/lottie_notification_bell"
+                 android:id="@+id/lottie_bell"
+                 android:layout_gravity="center"
+                 app:lottie_autoPlay="true"
+                 app:lottie_loop="false" />
+
+            <View
+                 android:layout_height="8dp"
+                 android:layout_width="8dp"
+                 android:visibility="gone"
+                 android:layout_marginEnd="8dp"
+                 android:background="@drawable/bg_circle_red"
+                 android:layout_marginTop="8dp"
+                 android:id="@+id/notification_badge"
+                 android:layout_gravity="top|end" />
+
+        </FrameLayout>
+
+        <com.google.android.material.card.MaterialCardView
+             android:layout_height="45dp"
+             android:layout_width="wrap_content"
+             android:clickable="true"
+             app:strokeColor="#FFD54F"
+             app:cardElevation="0dp"
+             app:strokeWidth="1dp"
+             app:cardBackgroundColor="#FFF8E1"
+             app:cardCornerRadius="20dp"
+             android:focusable="true"
+             android:id="@+id/coins_container"
+             android:foreground="?attr/selectableItemBackground">
+
+            <LinearLayout
+                 android:layout_height="match_parent"
+                 android:layout_width="wrap_content"
+                 android:paddingEnd="14dp"
+                 android:gravity="center_vertical"
+                 android:paddingStart="8dp">
+
+                <com.airbnb.lottie.LottieAnimationView
+                     android:layout_height="24dp"
+                     android:layout_width="24dp"
+                     android:scaleX="2"
+                     android:scaleY="2"
+                     app:lottie_rawRes="@raw/coin"
+                     android:id="@+id/coin_animation"
+                     app:lottie_autoPlay="true"
+                     app:lottie_loop="true" />
+
+                <com.google.android.material.textview.MaterialTextView
+                     android:layout_height="wrap_content"
+                     android:layout_width="wrap_content"
+                     android:includeFontPadding="false"
+                     android:textSize="18sp"
+                     android:textColor="#FF6F00"
+                     android:layout_marginStart="6dp"
+                     android:id="@+id/coins_text"
+                     android:text="0"
+                     android:textStyle="bold" />
+
+            </LinearLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

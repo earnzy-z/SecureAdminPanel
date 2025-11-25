@@ -1,0 +1,45 @@
+<LinearLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:orientation="vertical">
+	<LinearLayout
+		android:id="@+id/linear1"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:background="#FFFFFF"
+		android:gravity="center_horizontal|center_vertical"
+		android:orientation="vertical">
+		<TextView
+			android:id="@+id/textview1"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:padding="8dp"
+			android:text="🚫 Access Denied"
+			android:textSize="25sp"
+			android:textStyle="bold"
+			android:textColor="#000000" />
+		<com.airbnb.lottie.LottieAnimationView
+			android:id="@+id/lottie1"
+			android:layout_width="match_parent"
+			android:layout_height="300dp"
+			android:padding="8dp"
+			android:scaleType="fitCenter"
+			android:layout_centerInParent="true"
+			app:lottie_fileName="ban.json"
+			app:lottie_loop="false"
+			app:lottie_autoPlay="true" />
+		<TextView
+			android:id="@+id/textview2"
+			android:layout_width="330dp"
+			android:layout_height="wrap_content"
+			android:padding="8dp"
+			android:gravity="center_horizontal|center_vertical"
+			android:text="Your device has been permanently blocked due to policy violation. Please contact support if you believe this is a mistake."
+			android:textSize="16sp"
+			android:textStyle="bold"
+			android:textColor="#000000" />
+	</LinearLayout>
+</LinearLayout>

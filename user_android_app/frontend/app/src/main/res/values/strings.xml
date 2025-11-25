@@ -1,0 +1,36 @@
+<resources>
+    <string name="app_name">Earnzy</string>
+    <string name="default_web_client_id">435752710997-vkr4a3rudue16b79sanhhq6htkcummrj.apps.googleusercontent.com</string>
+    <string name="welcome_title">Welcome to Earnzy</string>
+    <string name="welcome_subtitle">Start earning rewards today</string>
+    <string name="sign_in_with_google">Sign in with Google</string>
+    <string name="terms_agreement">I agree to the Terms of Service and Privacy Policy</string>
+    <string name="error_no_internet">No internet connection</string>
+    <string name="error_vpn_detected">VPN detected. Please disable VPN to continue.</string>
+    <string name="error_device_not_supported">Device not supported</string>
+    <string name="success_login">Login successful</string>
+    <string name="success_signup">Sign up successful</string>
+    <string name="referral_prompt">Enter referral code</string>
+    <string name="referral_skip">Skip</string>
+    <string name="referral_continue">Continue</string>
+    <string name="home_welcome">Welcome, %s</string>
+    <string name="home_coins">Coins: %d</string>
+    <string name="banner_image">Banner image</string>
+    <string name="button_daily_reward">Claim Daily Reward</string>
+    <string name="button_withdraw">Withdraw</string>
+    <string name="base_url">https://earnzy-8e714.firebaseapp.com/</string>
+    <string name="button_transaction_history">Transaction History</string>
+    <string name="button_logout">Logout</string>
+    <string name="server_rsa_public_key_pem2"><![CDATA[
+-----BEGIN PUBLIC KEY-----
+MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAnltfAtU1KGHH1Lpjgdx0
+1uY3mZqt+99motUw2dI8s+p9457Ws3kfbLpBHoIZeW2q3k5pnCQxbgDgwFGfNo/I
+4ELo29n+caGcpSkVU/ibrnHQXT8ALrBN2M1ULoCs8W1uXoRGGwsQq6GGYwa1HVQv
+MZ49eKl1CseIu3H1O5Hn/KMDZviiHWVsWwBpUXjWE9qLtfnApwDgnUbxC4amd7mI
+4Vce5nD7kqPlNC+K054lpIMlTlfyzOCLj2DhOzBVmq91M81Q52dM2HWkYa+MTWST
+XdZuYUyWVh4LWGhRGvG8MRI+XomkcLK1aaTCjPt6xfDv5x9d0q/UfltnVcSByHKs
+dwIDAQAB
+-----END PUBLIC KEY-----
+]]></string>
+    <string name="api_key_base64">RWFybnp5X1NlY3JldF9LZXlfOTA4MDdfUFJPRFVDVElPTg==</string>
+</resources>

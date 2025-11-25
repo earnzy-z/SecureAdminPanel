@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Animated Stats Card Component -->
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+    app:cardCornerRadius="20dp"
+    app:cardElevation="6dp"
+    android:foreground="?attr/selectableItemBackground"
+    android:clickable="true"
+    android:focusable="true">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/gradient_background_primary"
+        android:padding="20dp">
+
+        <!-- Icon with Animation -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/stat_icon_card"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            app:cardCornerRadius="28dp"
+            app:cardElevation="4dp"
+            app:cardBackgroundColor="#40FFFFFF"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <com.airbnb.lottie.LottieAnimationView
+                android:id="@+id/stat_icon"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="12dp"
+                app:lottie_autoPlay="true"
+                app:lottie_loop="true" />
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Stat Info -->
+        <LinearLayout
+            android:id="@+id/stat_info"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginStart="16dp"
+            app:layout_constraintStart_toEndOf="@id/stat_icon_card"
+            app:layout_constraintEnd_toStartOf="@id/trend_indicator"
+            app:layout_constraintTop_toTopOf="@id/stat_icon_card"
+            app:layout_constraintBottom_toBottomOf="@id/stat_icon_card">
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/stat_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Total Earnings"
+                android:textSize="13sp"
+                android:textColor="@color/white"
+                android:alpha="0.9" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/stat_value"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="12,450"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:textColor="@color/white"
+                android:layout_marginTop="2dp" />
+
+        </LinearLayout>
+
+        <!-- Trend Indicator -->
+        <LinearLayout
+            android:id="@+id/trend_indicator"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:background="@drawable/pill_background_success"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp"
+            android:paddingTop="6dp"
+            android:paddingBottom="6dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:id="@+id/trend_icon"
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:src="@drawable/ic_trending_up"
+                android:tint="@color/white" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/trend_percentage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="+15%"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:textColor="@color/white"
+                android:layout_marginStart="4dp" />
+
+        </LinearLayout>
+
+        <!-- Mini Chart/Sparkline -->
+        <View
+            android:id="@+id/mini_chart"
+            android:layout_width="0dp"
+            android:layout_height="32dp"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/sparkline_chart"
+            app:layout_constraintTop_toBottomOf="@id/stat_icon_card"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <!-- Period Label -->
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/period_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="This Month"
+            android:textSize="11sp"
+            android:textColor="@color/white"
+            android:alpha="0.8"
+            android:layout_marginTop="8dp"
+            app:layout_constraintTop_toBottomOf="@id/mini_chart"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</com.google.android.material.card.MaterialCardView>

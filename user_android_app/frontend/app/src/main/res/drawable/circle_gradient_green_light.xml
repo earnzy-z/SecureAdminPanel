@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Light green gradient circle -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="oval">
+    <gradient
+        android:angle="135"
+        android:startColor="#D1FAE5"
+        android:endColor="#A7F3D0"
+        android:type="linear"/>
+</shape>

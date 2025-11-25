@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "435752710997",
+    "firebase_url": "https://earnzy-8e714-default-rtdb.firebaseio.com",
+    "project_id": "earnzy-8e714",
+    "storage_bucket": "earnzy-8e714.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:435752710997:android:5256205712068ee294b5dc",
+        "android_client_info": {
+          "package_name": "com.earnzy.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "435752710997-u7j02dgae225ss9djee5kqti7hdu3khj.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.earnzy.app",
+            "certificate_hash": "bd5d3caef3a1f1e631c3d60e76a40c5243539090"
+          }
+        },
+        {
+          "client_id": "435752710997-2reo7c39fboprv8nn3fst47pafvmf765.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDZhQZWaCDw2tqGRwd63rEeD3P6mZVup-Q"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "435752710997-2reo7c39fboprv8nn3fst47pafvmf765.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

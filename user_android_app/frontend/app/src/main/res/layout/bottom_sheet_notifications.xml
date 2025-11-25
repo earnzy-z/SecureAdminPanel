@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@drawable/bottom_sheet_background"
+    android:padding="16dp">
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/lottie_notification"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:layout_gravity="center_horizontal"
+        app:lottie_rawRes="@raw/lottie_notification_bell"
+        app:lottie_autoPlay="true"
+        app:lottie_loop="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Stay Updated!"
+        android:textColor="#1E293B"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:fontFamily="sans-serif-medium"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="12dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Enable notifications to receive important updates, alerts, and offers directly on your device."
+        android:textColor="#475569"
+        android:textSize="16sp"
+        android:gravity="center_horizontal"
+        android:lineSpacingMultiplier="1.2"
+        android:layout_marginTop="4dp"/>
+
+    <!-- The button with the invalid comments removed -->
+    <Button
+        android:id="@+id/btn_allow_notifications"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Allow Notifications"
+        android:background="@drawable/button_background_rounded"
+        android:textColor="@android:color/white"
+        android:layout_marginTop="20dp"
+        android:paddingTop="12dp"
+        android:paddingBottom="12dp"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:textAllCaps="false"/>
+
+    <TextView
+        android:id="@+id/tv_later"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Maybe Later"
+        android:textColor="#64748B"
+        android:textSize="14sp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="8dp"
+        android:padding="8dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:background="?attr/selectableItemBackground"/>
+
+</LinearLayout>

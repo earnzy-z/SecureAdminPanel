@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".LoginActivity">
+
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/background_viewpager"
+        android:layout_width="match_parent"
+        android:layout_height="540dp" />
+
+    <!-- This FrameLayout will have the blur effect applied from the code -->
+    <FrameLayout
+        android:id="@+id/card_frame"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom">
+
+        <!-- This LinearLayout contains your login UI elements -->
+        <LinearLayout
+            android:id="@+id/card_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="24dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/textview_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Welcome Back"
+                android:textSize="26sp"
+                android:textColor="#1F1F1F"
+                android:fontFamily="@font/poppins_medium"
+                android:alpha="0" />
+
+            <TextView
+                android:id="@+id/textview_subtitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="Sign in to continue your journey."
+                android:textSize="16sp"
+                android:textColor="#606060"
+                android:fontFamily="@font/poppins_regular"
+                android:alpha="0" />
+
+            <View
+                android:id="@+id/divider"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="24dp"
+                android:layout_marginBottom="24dp"
+                android:background="@drawable/divider_line"
+                android:alpha="0" />
+
+            <CheckBox
+                android:id="@+id/terms_checkbox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="I agree to the Terms of Service and Privacy Policy"
+                android:textSize="12sp"
+                android:textColor="#606060"
+                android:fontFamily="@font/poppins_regular"
+                android:alpha="0" />
+
+            <TextView
+                android:id="@+id/textview_error"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:gravity="center_horizontal|center_vertical"
+                android:textSize="12sp"
+                android:textColor="#D32F2F"
+                android:fontFamily="@font/poppins_regular"
+                android:visibility="gone" />
+
+            <FrameLayout
+                android:id="@+id/button_frame"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:layout_marginBottom="16dp"
+                android:alpha="0">
+
+                <Button
+                    android:id="@+id/google_btn"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:background="@drawable/google_button_background"
+                    android:gravity="center_horizontal|center_vertical"
+                    android:text="Sign in with Google"
+                    android:textSize="16sp"
+                    android:textColor="#1F1F1F"
+                    android:drawableStart="@drawable/googleg_standard_color_18"
+                    android:fontFamily="@font/poppins_medium"
+                    android:paddingStart="24dp"
+                    android:paddingEnd="24dp"
+                    android:textAllCaps="false" />
+
+                <ProgressBar
+                    android:id="@+id/loading_progressbar"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:indeterminate="false"
+                    style="?android:progressBarStyle"
+                    android:layout_gravity="center_horizontal|center_vertical"
+                    android:indeterminateTint="@color/design_default_color_primary"
+                    android:visibility="gone" />
+            </FrameLayout>
+        </LinearLayout>
+    </FrameLayout>
+</FrameLayout>
