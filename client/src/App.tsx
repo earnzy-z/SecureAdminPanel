@@ -3,14 +3,12 @@ import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import NotFound from "@/pages/not-found";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/app-sidebar";
-import { ThemeProvider } from "@/components/theme-provider";
-import { ThemeToggle } from "@/components/theme-toggle";
-import { useAuth } from "@/hooks/useAuth";
-import { useEffect } from "react";
-import NotFound from "@/pages/not-found";
-import Login from "@/pages/login";
+import ThemeToggle from "@/components/theme-toggle";
+
+// Import all pages
 import Dashboard from "@/pages/dashboard";
 import Users from "@/pages/users";
 import Transactions from "@/pages/transactions";
@@ -21,110 +19,66 @@ import Tasks from "@/pages/tasks";
 import Achievements from "@/pages/achievements";
 import Notifications from "@/pages/notifications";
 import PromoCodes from "@/pages/promo-codes";
-import Support from "@/pages/support";
+import SupportTickets from "@/pages/support-tickets";
+import SupportLiveChat from "@/pages/support-live-chat";
 import Leaderboard from "@/pages/leaderboard";
 import Referrals from "@/pages/referrals";
 import Withdrawals from "@/pages/withdrawals";
-import AutoBan from "@/pages/auto-ban";
+import AutoBanRules from "@/pages/auto-ban-rules";
 import Settings from "@/pages/settings";
+import AppAnalytics from "@/pages/app-analytics";
 
 function Router() {
-  const { isAuthenticated, isLoading } = useAuth();
-
-  if (isLoading) {
-    return (
-      <div className="flex items-center justify-center h-screen">
-        <div className="animate-spin">Loading...</div>
-      </div>
-    );
-  }
-
   return (
     <Switch>
-      {!isAuthenticated ? (
-        <>
-          <Route path="/" component={Login} />
-          <Route component={Login} />
-        </>
-      ) : (
-        <>
-          <Route path="/" component={Dashboard} />
-          <Route path="/users" component={Users} />
-          <Route path="/transactions" component={Transactions} />
-          <Route path="/coin-control" component={CoinControl} />
-          <Route path="/offers" component={Offers} />
-          <Route path="/banners" component={Banners} />
-          <Route path="/tasks" component={Tasks} />
-          <Route path="/achievements" component={Achievements} />
-          <Route path="/notifications" component={Notifications} />
-          <Route path="/promo-codes" component={PromoCodes} />
-          <Route path="/support" component={Support} />
-          <Route path="/leaderboard" component={Leaderboard} />
-          <Route path="/referrals" component={Referrals} />
-          <Route path="/withdrawals" component={Withdrawals} />
-          <Route path="/auto-ban" component={AutoBan} />
-          <Route path="/settings" component={Settings} />
-          <Route component={NotFound} />
-        </>
-      )}
+      <Route path="/" component={Dashboard} />
+      <Route path="/users" component={Users} />
+      <Route path="/transactions" component={Transactions} />
+      <Route path="/coins" component={CoinControl} />
+      <Route path="/offers" component={Offers} />
+      <Route path="/banners" component={Banners} />
+      <Route path="/tasks" component={Tasks} />
+      <Route path="/achievements" component={Achievements} />
+      <Route path="/notifications" component={Notifications} />
+      <Route path="/promo-codes" component={PromoCodes} />
+      <Route path="/support/tickets" component={SupportTickets} />
+      <Route path="/support/:id" component={SupportLiveChat} />
+      <Route path="/leaderboard" component={Leaderboard} />
+      <Route path="/referrals" component={Referrals} />
+      <Route path="/withdrawals" component={Withdrawals} />
+      <Route path="/auto-ban-rules" component={AutoBanRules} />
+      <Route path="/settings" component={Settings} />
+      <Route path="/analytics" component={AppAnalytics} />
+      <Route component={NotFound} />
     </Switch>
   );
 }
 
-function AdminPanel() {
-  const { isAuthenticated, isLoading } = useAuth();
-
+export default function App() {
   const style = {
     "--sidebar-width": "16rem",
     "--sidebar-width-icon": "3rem",
-  };
+  } as React.CSSProperties;
 
-  if (isLoading) {
-    return (
-      <div className="flex items-center justify-center h-screen">
-        <div>Loading...</div>
-      </div>
-    );
-  }
-
-  return (
-    <SidebarProvider style={style as React.CSSProperties}>
-      <div className="flex h-screen w-full">
-        {isAuthenticated && <AppSidebar />}
-        <div className="flex flex-col flex-1 overflow-hidden">
-          {isAuthenticated && (
-            <header className="flex items-center justify-between p-4 border-b border-border bg-background sticky top-0 z-10">
-              <SidebarTrigger data-testid="button-sidebar-toggle" />
-              <div className="flex items-center gap-4">
-                <ThemeToggle />
-                <a
-                  href="/api/logout"
-                  className="text-sm text-muted-foreground hover:text-foreground"
-                  data-testid="button-logout"
-                >
-                  Logout
-                </a>
-              </div>
-            </header>
-          )}
-          <main className={isAuthenticated ? "flex-1 overflow-y-auto p-6 bg-background" : "flex-1"}>
-            <Router />
-          </main>
-        </div>
-      </div>
-    </SidebarProvider>
-  );
-}
-
-export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <ThemeProvider defaultTheme="light" storageKey="admin-panel-theme">
-        <TooltipProvider>
-          <AdminPanel />
-          <Toaster />
-        </TooltipProvider>
-      </ThemeProvider>
+      <TooltipProvider>
+        <SidebarProvider style={style}>
+          <div className="flex h-screen w-full">
+            <AppSidebar />
+            <div className="flex flex-col flex-1">
+              <header className="flex items-center justify-between p-4 border-b">
+                <SidebarTrigger data-testid="button-sidebar-toggle" />
+                <ThemeToggle />
+              </header>
+              <main className="flex-1 overflow-auto">
+                <Router />
+              </main>
+            </div>
+          </div>
+        </SidebarProvider>
+        <Toaster />
+      </TooltipProvider>
     </QueryClientProvider>
   );
 }

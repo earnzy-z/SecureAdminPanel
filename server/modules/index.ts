@@ -10,6 +10,7 @@ import { setupAchievementsRoutes } from "./achievements/achievements.controller"
 import { setupPromoCodesRoutes } from "./promo-codes/promo-codes.controller";
 import { setupWithdrawalsRoutes } from "./withdrawals/withdrawals.controller";
 import { setupSupportRoutes } from "./support/support.controller";
+import { setupLiveChatRoutes } from "./support/live-chat.controller";
 import { setupNotificationsRoutes } from "./notifications/notifications.controller";
 import { setupLeaderboardRoutes } from "./leaderboard/leaderboard.controller";
 import { setupReferralsRoutes } from "./referrals/referrals.controller";
@@ -27,6 +28,7 @@ export function registerModules(app: Express) {
   setupPromoCodesRoutes(app);
   setupWithdrawalsRoutes(app);
   setupSupportRoutes(app);
+  setupLiveChatRoutes(app);
   setupNotificationsRoutes(app);
   setupLeaderboardRoutes(app);
   setupReferralsRoutes(app);
