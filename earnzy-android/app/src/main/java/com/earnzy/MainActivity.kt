@@ -3,7 +3,7 @@ package com.earnzy
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.earnzy.databinding.ActivityMainBinding
-import com.earnzy.ui.fragments.DashboardFragment
+import com.earnzy.ui.fragments.*
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
@@ -20,23 +20,23 @@ class MainActivity : AppCompatActivity() {
         binding.bottomNavigation.setOnItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.nav_dashboard -> {
-                    loadFragment(DashboardFragment(), "Dashboard")
+                    loadFragment(DashboardFragment(), "Home")
+                    true
+                }
+                R.id.nav_wallet -> {
+                    loadFragment(WalletFragment(), "Wallet")
                     true
                 }
                 R.id.nav_tasks -> {
-                    loadFragment(com.earnzy.ui.fragments.TasksFragment(), "Tasks")
-                    true
-                }
-                R.id.nav_offers -> {
-                    loadFragment(com.earnzy.ui.fragments.OffersFragment(), "Offers")
+                    loadFragment(TasksFragment(), "Tasks")
                     true
                 }
                 R.id.nav_leaderboard -> {
-                    loadFragment(com.earnzy.ui.fragments.LeaderboardFragment(), "Leaderboard")
+                    loadFragment(LeaderboardFragment(), "Leaderboard")
                     true
                 }
                 R.id.nav_profile -> {
-                    loadFragment(com.earnzy.ui.fragments.ProfileFragment(), "Profile")
+                    loadFragment(ProfileFragment(), "Profile")
                     true
                 }
                 else -> false
@@ -45,7 +45,8 @@ class MainActivity : AppCompatActivity() {
 
         // Load dashboard by default
         if (savedInstanceState == null) {
-            loadFragment(DashboardFragment(), "Dashboard")
+            loadFragment(DashboardFragment(), "Home")
+            binding.bottomNavigation.selectedItemId = R.id.nav_dashboard
         }
     }
 

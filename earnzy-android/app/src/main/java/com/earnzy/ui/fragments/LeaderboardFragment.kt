@@ -4,8 +4,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AnimationUtils
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.earnzy.R
 import com.earnzy.api.ApiClient
 import com.earnzy.databinding.FragmentLeaderboardBinding
 import com.earnzy.ui.adapters.LeaderboardAdapter
@@ -29,6 +31,7 @@ class LeaderboardFragment : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupRecyclerView()
+        showShimmer(true)
         loadLeaderboard()
     }
 
@@ -55,9 +58,20 @@ class LeaderboardFragment : BaseFragment() {
                     LeaderboardEntry(8, "Player 8", 15000, 32),
                 )
                 adapter.updateEntries(leaderboardData)
+                showShimmer(false)
             } catch (e: Exception) {
+                showShimmer(false)
                 showError("Failed to load leaderboard: ${e.message}")
             }
+        }
+    }
+
+    private fun showShimmer(show: Boolean) {
+        if (show) {
+            binding.leaderboardRecyclerView.visibility = View.GONE
+            val animation = AnimationUtils.loadAnimation(context, R.anim.shimmer)
+        } else {
+            binding.leaderboardRecyclerView.visibility = View.VISIBLE
         }
     }
 

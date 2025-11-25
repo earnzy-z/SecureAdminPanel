@@ -5,13 +5,13 @@
         android:icon="@android:drawable/ic_menu_view"
         android:title="Home" />
     <item
+        android:id="@+id/nav_wallet"
+        android:icon="@android:drawable/ic_menu_view"
+        android:title="Wallet" />
+    <item
         android:id="@+id/nav_tasks"
         android:icon="@android:drawable/ic_menu_view"
         android:title="Tasks" />
-    <item
-        android:id="@+id/nav_offers"
-        android:icon="@android:drawable/ic_menu_view"
-        android:title="Offers" />
     <item
         android:id="@+id/nav_leaderboard"
         android:icon="@android:drawable/ic_menu_view"

@@ -4,14 +4,15 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AnimationUtils
 import androidx.lifecycle.lifecycleScope
 import com.earnzy.R
 import com.earnzy.api.ApiClient
-import com.earnzy.databinding.FragmentDashboardBinding
+import com.earnzy.databinding.FragmentDashboardImprovedBinding
 import kotlinx.coroutines.launch
 
 class DashboardFragment : BaseFragment() {
-    private var _binding: FragmentDashboardBinding? = null
+    private var _binding: FragmentDashboardImprovedBinding? = null
     private val binding get() = _binding!!
 
     override fun onCreateView(
@@ -19,12 +20,13 @@ class DashboardFragment : BaseFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentDashboardBinding.inflate(inflater, container, false)
+        _binding = FragmentDashboardImprovedBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        showShimmer(true)
         loadUserData()
         setupClickListeners()
     }
@@ -37,7 +39,10 @@ class DashboardFragment : BaseFragment() {
 
                 binding.coinsText.text = "${balance.coins} Coins"
                 updateProgressBar(balance.coins, balance.nextLevelCoins)
+
+                showShimmer(false)
             } catch (e: Exception) {
+                showShimmer(false)
                 showError("Failed to load data: ${e.message}")
             }
         }
@@ -69,6 +74,19 @@ class DashboardFragment : BaseFragment() {
             .replace(R.id.fragment_container, fragment)
             .addToBackStack(null)
             .commit()
+    }
+
+    private fun showShimmer(show: Boolean) {
+        if (show) {
+            binding.shimmerContainer.visibility = View.VISIBLE
+            binding.contentContainer.visibility = View.GONE
+            val animation = AnimationUtils.loadAnimation(context, R.anim.shimmer)
+            binding.shimmerContainer.startAnimation(animation)
+        } else {
+            binding.shimmerContainer.visibility = View.GONE
+            binding.contentContainer.visibility = View.VISIBLE
+            binding.shimmerContainer.clearAnimation()
+        }
     }
 
     override fun onDestroyView() {

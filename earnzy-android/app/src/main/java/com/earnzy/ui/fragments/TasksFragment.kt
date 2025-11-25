@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AnimationUtils
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.earnzy.R
@@ -30,6 +31,7 @@ class TasksFragment : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupRecyclerView()
+        showShimmer(true)
         loadTasks()
     }
 
@@ -49,7 +51,9 @@ class TasksFragment : BaseFragment() {
             try {
                 val response = ApiClient.api.getTasks()
                 taskAdapter.updateTasks(response.tasks)
+                showShimmer(false)
             } catch (e: Exception) {
+                showShimmer(false)
                 showError("Failed to load tasks: ${e.message}")
             }
         }
@@ -64,6 +68,16 @@ class TasksFragment : BaseFragment() {
             } catch (e: Exception) {
                 showError("Task already completed or failed")
             }
+        }
+    }
+
+    private fun showShimmer(show: Boolean) {
+        if (show) {
+            binding.tasksRecyclerView.visibility = View.GONE
+            val shimmerAnimation = AnimationUtils.loadAnimation(context, R.anim.shimmer)
+            // Apply shimmer to placeholder items
+        } else {
+            binding.tasksRecyclerView.visibility = View.VISIBLE
         }
     }
 

@@ -4,14 +4,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
+import android.view.animation.AnimationUtils
 import androidx.lifecycle.lifecycleScope
-import androidx.appcompat.app.AlertDialog
+import com.earnzy.R
 import com.earnzy.api.ApiClient
 import com.earnzy.data.PromoCode
 import com.earnzy.databinding.FragmentPromoBinding
 import com.earnzy.databinding.ItemPromoBinding
-import com.google.android.material.textfield.TextInputEditText
 import kotlinx.coroutines.launch
 
 class PromoFragment : BaseFragment() {
@@ -30,6 +29,7 @@ class PromoFragment : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupInputField()
+        showShimmer(true)
         loadPromoCodes()
     }
 
@@ -49,7 +49,9 @@ class PromoFragment : BaseFragment() {
             try {
                 val response = ApiClient.api.getPromoCodes()
                 displayPromoCodes(response["promoCodes"] as? List<PromoCode> ?: emptyList())
+                showShimmer(false)
             } catch (e: Exception) {
+                showShimmer(false)
                 showError("Failed to load promo codes: ${e.message}")
             }
         }
@@ -76,6 +78,15 @@ class PromoFragment : BaseFragment() {
             } catch (e: Exception) {
                 showError("Invalid or already used code")
             }
+        }
+    }
+
+    private fun showShimmer(show: Boolean) {
+        if (show) {
+            binding.codesContainer?.visibility = View.GONE
+            val animation = AnimationUtils.loadAnimation(context, R.anim.shimmer)
+        } else {
+            binding.codesContainer?.visibility = View.VISIBLE
         }
     }
 

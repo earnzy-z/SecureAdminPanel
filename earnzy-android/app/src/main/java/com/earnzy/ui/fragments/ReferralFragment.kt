@@ -5,7 +5,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AnimationUtils
 import androidx.lifecycle.lifecycleScope
+import com.earnzy.R
 import com.earnzy.api.ApiClient
 import com.earnzy.databinding.FragmentReferralBinding
 import kotlinx.coroutines.launch
@@ -25,6 +27,7 @@ class ReferralFragment : BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        showShimmer(true)
         loadReferralData()
         setupClickListeners()
     }
@@ -39,7 +42,10 @@ class ReferralFragment : BaseFragment() {
                 binding.totalReferrals.text = stats.totalReferrals.toString()
                 binding.earnedCoins.text = stats.earnedCoins.toString()
                 binding.activeReferrals.text = stats.activeReferrals.toString()
+                
+                showShimmer(false)
             } catch (e: Exception) {
+                showShimmer(false)
                 showError("Failed to load referral data: ${e.message}")
             }
         }
@@ -67,6 +73,15 @@ class ReferralFragment : BaseFragment() {
         val clipboard = context?.getSystemService(android.content.Context.CLIPBOARD_SERVICE) as android.content.ClipboardManager
         val clip = android.content.ClipData.newPlainText("referral_code", text)
         clipboard.setPrimaryClip(clip)
+    }
+
+    private fun showShimmer(show: Boolean) {
+        if (show) {
+            binding.root.visibility = View.GONE
+            val animation = AnimationUtils.loadAnimation(context, R.anim.shimmer)
+        } else {
+            binding.root.visibility = View.VISIBLE
+        }
     }
 
     override fun onDestroyView() {

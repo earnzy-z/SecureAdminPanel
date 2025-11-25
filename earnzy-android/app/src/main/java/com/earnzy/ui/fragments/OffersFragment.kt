@@ -4,8 +4,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AnimationUtils
 import androidx.gridlayout.widget.GridLayout
 import androidx.lifecycle.lifecycleScope
+import com.earnzy.R
 import com.earnzy.api.ApiClient
 import com.earnzy.data.Offer
 import com.earnzy.databinding.FragmentOffersBinding
@@ -27,6 +29,7 @@ class OffersFragment : BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        showShimmer(true)
         loadOffers()
     }
 
@@ -35,7 +38,9 @@ class OffersFragment : BaseFragment() {
             try {
                 val wall = ApiClient.api.getOfferWall()
                 displayOffers(wall)
+                showShimmer(false)
             } catch (e: Exception) {
+                showShimmer(false)
                 showError("Failed to load offers: ${e.message}")
             }
         }
@@ -85,6 +90,15 @@ class OffersFragment : BaseFragment() {
             } catch (e: Exception) {
                 showError("Offer already claimed")
             }
+        }
+    }
+
+    private fun showShimmer(show: Boolean) {
+        if (show) {
+            binding.offersGrid.visibility = View.GONE
+            val animation = AnimationUtils.loadAnimation(context, R.anim.shimmer)
+        } else {
+            binding.offersGrid.visibility = View.VISIBLE
         }
     }
 
