@@ -212,6 +212,7 @@
 
         <!-- Achievements -->
         <com.google.android.material.card.MaterialCardView
+            android:id="@+id/achievements_menu_card"
             android:layout_width="match_parent"
             android:layout_height="56dp"
             app:cardCornerRadius="12dp"
@@ -254,6 +255,7 @@
 
         <!-- Leaderboard -->
         <com.google.android.material.card.MaterialCardView
+            android:id="@+id/leaderboard_menu_card"
             android:layout_width="match_parent"
             android:layout_height="56dp"
             app:cardCornerRadius="12dp"
@@ -296,6 +298,7 @@
 
         <!-- Referrals -->
         <com.google.android.material.card.MaterialCardView
+            android:id="@+id/referral_menu_card"
             android:layout_width="match_parent"
             android:layout_height="56dp"
             app:cardCornerRadius="12dp"
@@ -338,6 +341,7 @@
 
         <!-- Support -->
         <com.google.android.material.card.MaterialCardView
+            android:id="@+id/support_menu_card"
             android:layout_width="match_parent"
             android:layout_height="56dp"
             app:cardCornerRadius="12dp"
@@ -380,6 +384,7 @@
 
         <!-- Settings -->
         <com.google.android.material.card.MaterialCardView
+            android:id="@+id/settings_menu_card"
             android:layout_width="match_parent"
             android:layout_height="56dp"
             app:cardCornerRadius="12dp"

@@ -362,6 +362,7 @@
 
             <!-- PayPal -->
             <com.google.android.material.card.MaterialCardView
+                android:id="@+id/paypal_method_card"
                 android:layout_width="0dp"
                 android:layout_height="80dp"
                 android:layout_weight="1"
@@ -403,6 +404,7 @@
 
             <!-- Bank -->
             <com.google.android.material.card.MaterialCardView
+                android:id="@+id/bank_method_card"
                 android:layout_width="0dp"
                 android:layout_height="80dp"
                 android:layout_weight="1"
@@ -444,6 +446,7 @@
 
             <!-- Gift Card -->
             <com.google.android.material.card.MaterialCardView
+                android:id="@+id/gift_method_card"
                 android:layout_width="0dp"
                 android:layout_height="80dp"
                 android:layout_weight="1"
@@ -485,6 +488,7 @@
 
             <!-- Crypto -->
             <com.google.android.material.card.MaterialCardView
+                android:id="@+id/crypto_method_card"
                 android:layout_width="0dp"
                 android:layout_height="80dp"
                 android:layout_weight="1"

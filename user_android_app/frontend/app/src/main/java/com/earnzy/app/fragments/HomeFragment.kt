@@ -1,4 +1,3 @@
-// fragments/HomeFragment.kt
 package com.earnzy.app.fragments
 
 import android.animation.ValueAnimator
@@ -45,7 +44,6 @@ import java.net.URL
 
 class HomeFragment : Fragment() {
 
-    // UI Views
     private var shimmerContainer: ShimmerFrameLayout? = null
     private var mainContentContainer: View? = null
     private var bannerPager: ViewPager2? = null
@@ -59,37 +57,41 @@ class HomeFragment : Fragment() {
     private var fabQuickEarn: ExtendedFloatingActionButton? = null
     private var BANNER_CMS_URL = "https://banner-cms-worker.dev-prashant-15.workers.dev"
 
-    // Adapters
     private var featuresAdapter: AdminFeatureAdapter? = null
     private var bannerAdapter: BannerPageAdapter? = null
 
-    // State
     private var currentCoins = 0
     private var autoSlideJob: Job? = null
     private var coinAnimator: ValueAnimator? = null
     private lateinit var securePrefs: SharedPreferences
     private val autoSlideMillis = 4000L
 
-    
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        return inflater.inflate(R.layout.fragment_home, container, false)
+    }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        val view = inflater.inflate(R.layout.fragment_home, container, false)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         initializeSecureStorage()
         initViews(view)
         setupRecycler()
         setupBannerPager()
         setupFab()
         animateEntrance(view)
-        return view
+        loadHomeData()
     }
-    
+
     private fun animateEntrance(view: View) {
         try {
-            AnimationUtils.slideUpIn(coinsText ?: return, duration = 400, delay = 0)
-            AnimationUtils.slideUpIn(rvQuickActions ?: return, duration = 400, delay = 100)
-            AnimationUtils.slideUpIn(fabQuickEarn ?: return, duration = 400, delay = 200)
+            coinsText?.let { AnimationUtils.slideUpIn(it, delay = 0) }
+            rvQuickActions?.let { AnimationUtils.slideUpIn(it, delay = 100) }
+            fabQuickEarn?.let { AnimationUtils.slideUpIn(it, delay = 200) }
         } catch (e: Exception) {
-            Log.e("HomeFragment", "Animation error", e)
+            Log.e("HomeFragment", "Animation error: ${e.message}")
         }
     }
 
@@ -116,7 +118,7 @@ class HomeFragment : Fragment() {
                 EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
             )
         } catch (e: Exception) {
-            Log.e("HomeFragment", "Security setup failed", e)
+            Log.e("HomeFragment", "Security setup error: ${e.message}")
         }
     }
 
@@ -157,7 +159,7 @@ class HomeFragment : Fragment() {
 
     private fun loadHomeData() {
         startLoadingState()
-        viewLifecycleOwner.lifecycleScope.launch {
+        lifecycleScope.launch {
             if (!isAdded) return@launch
 
             val adminFeatures = getMockAdminFeatures()
@@ -165,14 +167,22 @@ class HomeFragment : Fragment() {
 
             try {
                 val ctx = context ?: run { stopLoadingState(); return@launch }
+                val auth = FirebaseAuth.getInstance()
+                val currentUser = auth.currentUser ?: run { stopLoadingState(); return@launch }
+                
+                val idToken = try { currentUser.getIdToken(false).await().token ?: "" } catch (e: Exception) { "" }
+                val deviceID = android.provider.Settings.Secure.getString(ctx.contentResolver, android.provider.Settings.Secure.ANDROID_ID) ?: "unknown"
+                val deviceToken = "" // FCM token would go here
+                val isVpn = false // VPN detection logic
+                val isSslProxy = false // SSL proxy detection logic
+
                 val responseJson = withContext(Dispatchers.IO) {
-                    FeaturesApiClient.getUserProfile(ctx, getIdToken(), getDeviceID(), getDeviceToken(), isVpn(), isSslProxy())
+                    FeaturesApiClient.getUserProfile(ctx, idToken, deviceID, deviceToken, isVpn, isSslProxy)
                 }
 
                 if (!isAdded) return@launch
 
                 val response = HomeResponse.fromJson(responseJson)
-
                 if (response != null) {
                     response.user?.let { user ->
                         val coins = user.optInt("coins", 0)
@@ -180,12 +190,11 @@ class HomeFragment : Fragment() {
                         userNameText?.text = name
                         animateCoins(coins)
                     }
-
                 } else {
                     Log.e("HomeFragment", "API failed, using mocks")
                 }
             } catch (e: Exception) {
-                Log.e("HomeFragment", "Load error", e)
+                Log.e("HomeFragment", "Load error: ${e.message}")
             } finally {
                 stopLoadingState()
             }
@@ -216,136 +225,90 @@ class HomeFragment : Fragment() {
     )
 
     private fun loadBanners() {
-        viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
+        lifecycleScope.launch(Dispatchers.IO) {
             try {
                 val jsonResponse = URL(BANNER_CMS_URL).readText()
                 val banners = parseBanners(jsonResponse)
                 withContext(Dispatchers.Main) {
-                    bannerAdapter?.let {
-                        it.notifyDataSetChanged()
+                    if (isAdded) {
+                        bannerAdapter?.submitList(banners)
                     }
                 }
             } catch (e: Exception) {
-                Log.e("HomeFragment", "Failed to load banners: ${e.message}")
+                Log.e("HomeFragment", "Banner load error: ${e.message}")
             }
         }
     }
 
     private fun parseBanners(json: String): List<BannerItem> {
-        val banners = mutableListOf<BannerItem>()
-        val jsonArray = JSONArray(json)
-        for (i in 0 until jsonArray.length()) {
-            val bannerObject = jsonArray.getJSONObject(i)
-            banners.add(
-                BannerItem(
-                    id = bannerObject.getString("id"),
-                    imageUrl = bannerObject.getString("imageUrl"),
-                    clickAction = bannerObject.getString("clickAction"),
-                    deepLink = bannerObject.optString("deepLink", null),
-                    title = bannerObject.getString("title")
+        return try {
+            val arr = JSONArray(json)
+            val banners = mutableListOf<BannerItem>()
+            for (i in 0 until minOf(arr.length(), 6)) {
+                val obj = arr.getJSONObject(i)
+                banners.add(
+                    BannerItem(
+                        id = obj.optString("id", "banner_$i"),
+                        imageUrl = obj.optString("image_url"),
+                        clickAction = obj.optString("click_action")
+                    )
                 )
-            )
-        }
-        return banners
-    }
-
-    private fun handleFeatureClick(item: AdminFeatureItem) {
-        when (item.clickAction) {
-            "OPEN_DAILY" -> showLimitReachedBottomSheet()
-            "OPEN_SPIN" -> Toast.makeText(context, "Spin Wheel Loading... ${item.rewardText}", Toast.LENGTH_SHORT).show()
-            "OPEN_SCRATCH" -> Toast.makeText(context, "Scratch Card Loading... ${item.subtitle}", Toast.LENGTH_SHORT).show()
-            "OPEN_VIDEO" -> Toast.makeText(context, "Loading Video Ad... Earn ${item.rewardText}", Toast.LENGTH_SHORT).show()
-        }
-    }
-
-    private fun handleBannerClick(banner: BannerItem) {
-        when (banner.clickAction) {
-            "OPEN_OFFER" -> Toast.makeText(context, "Opening Offer: ${banner.title}", Toast.LENGTH_SHORT).show()
-            "OPEN_WEB" -> {
-                banner.deepLink?.let { link ->
-                    Toast.makeText(context, "Navigating to $link", Toast.LENGTH_SHORT).show()
-                    // TODO: Launch URL
-                }
             }
-            "OPEN_EVENT" -> showQuickEarnOptions()
-            else -> Toast.makeText(context, "Banner Tapped: ${banner.id}", Toast.LENGTH_SHORT).show()
+            banners
+        } catch (e: Exception) {
+            emptyList()
         }
-    }
-
-    private fun startLoadingState() {
-        shimmerContainer?.apply { visibility = View.VISIBLE; startShimmer() }
-        mainContentContainer?.visibility = View.GONE
-        fabQuickEarn?.hide()
-    }
-
-    private fun stopLoadingState() {
-        shimmerContainer?.let {
-            if (it.visibility == View.GONE) return
-            it.stopShimmer()
-            it.visibility = View.GONE
-        }
-        mainContentContainer?.apply {
-            alpha = 0f
-            visibility = View.VISIBLE
-            animate().alpha(1f).setDuration(600).start()
-        }
-        fabQuickEarn?.show()
-    }
-
-    private fun animateCoins(targetValue: Int) {
-        coinAnimator?.cancel()
-        val startValue = currentCoins
-        coinAnimator = ValueAnimator.ofInt(startValue, targetValue).apply {
-            duration = 1500
-            interpolator = AccelerateDecelerateInterpolator()
-            addUpdateListener { animation ->
-                if (isAdded) coinsText?.text = "${animation.animatedValue} Coins"
-            }
-            start()
-        }
-        currentCoins = targetValue
     }
 
     private fun setupBannerPager() {
-        val pager = bannerPager ?: return
-        bannerAdapter = BannerPageAdapter(emptyList()) { banner -> handleBannerClick(banner) }
-
-        pager.apply {
+        bannerAdapter = BannerPageAdapter { banner -> handleBannerClick(banner) }
+        bannerPager?.apply {
             adapter = bannerAdapter
-            offscreenPageLimit = 3
-            getChildAt(0)?.overScrollMode = View.OVER_SCROLL_NEVER
             setPageTransformer(ParallaxPageTransformer())
+            offscreenPageLimit = 2
         }
     }
 
     private fun setupFab() {
-        fabQuickEarn?.setOnClickListener { showQuickEarnOptions() }
+        fabQuickEarn?.setOnClickListener {
+            AnimationUtils.pressAnimation(it)
+            Toast.makeText(context, "Quick Earn started!", Toast.LENGTH_SHORT).show()
+        }
     }
 
-    private fun showQuickEarnOptions() {
-        context ?: return
-        val dialog = BottomSheetDialog(requireContext(), R.style.BottomSheetDialogTheme)
-        val view = layoutInflater.inflate(R.layout.bottom_sheet_quick_earn, null)
-        dialog.setContentView(view)
-        dialog.show()
+    private fun animateCoins(newCoins: Int) {
+        coinAnimator?.cancel()
+        coinAnimator = ValueAnimator.ofInt(currentCoins, newCoins).apply {
+            duration = 600
+            interpolator = AccelerateDecelerateInterpolator()
+            addUpdateListener { animation ->
+                currentCoins = animation.animatedValue as Int
+                coinsText?.text = "₹ $currentCoins"
+            }
+            start()
+        }
     }
 
-    private fun showLimitReachedBottomSheet() {
-        context ?: return
-        val dialog = BottomSheetDialog(requireContext(), R.style.BottomSheetDialogTheme)
-        val view = layoutInflater.inflate(R.layout.bottom_sheet_limit_reached, null)
-        view.findViewById<MaterialButton>(R.id.close_button)?.setOnClickListener { dialog.dismiss() }
-        dialog.setContentView(view)
-        dialog.show()
+    private fun startLoadingState() {
+        shimmerContainer?.startShimmer()
+        shimmerContainer?.visibility = View.VISIBLE
+        mainContentContainer?.visibility = View.GONE
+    }
+
+    private fun stopLoadingState() {
+        shimmerContainer?.stopShimmer()
+        shimmerContainer?.visibility = View.GONE
+        mainContentContainer?.visibility = View.VISIBLE
     }
 
     private fun startAutoSlide() {
-        stopAutoSlide()
-        autoSlideJob = viewLifecycleOwner.lifecycleScope.launch {
+        autoSlideJob?.cancel()
+        autoSlideJob = lifecycleScope.launch {
             while (isActive) {
                 delay(autoSlideMillis)
-                bannerPager?.let { pager ->
-                    pager.setCurrentItem(pager.currentItem + 1, true)
+                if (isAdded && bannerPager != null) {
+                    val nextItem = (bannerPager!!.currentItem + 1) % (bannerAdapter?.itemCount ?: 1)
+                    bannerPager?.setCurrentItem(nextItem, true)
                 }
             }
         }
@@ -353,15 +316,13 @@ class HomeFragment : Fragment() {
 
     private fun stopAutoSlide() {
         autoSlideJob?.cancel()
-        autoSlideJob = null
     }
 
-    private suspend fun getIdToken(): String = withContext(Dispatchers.IO) {
-        try { FirebaseAuth.getInstance().currentUser?.getIdToken(false)?.await()?.token ?: "" } catch (e: Exception) { "" }
+    private fun handleFeatureClick(feature: AdminFeatureItem) {
+        Toast.makeText(context, "${feature.title} clicked!", Toast.LENGTH_SHORT).show()
     }
 
-    private fun getDeviceID(): String = securePrefs.getString("deviceID", "") ?: ""
-    private fun getDeviceToken(): String = securePrefs.getString("deviceToken", "") ?: ""
-    private fun isVpn(): Boolean = securePrefs.getBoolean("isVpn", false)
-    private fun isSslProxy(): Boolean = securePrefs.getBoolean("isSslProxy", false)
+    private fun handleBannerClick(banner: BannerItem) {
+        Toast.makeText(context, "Banner ${banner.id} clicked", Toast.LENGTH_SHORT).show()
+    }
 }
