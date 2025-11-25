@@ -1,184 +1,75 @@
 package com.earnzy
 
 import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
-import androidx.compose.material3.*
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.Modifier
-import androidx.navigation.NavGraph.Companion.findStartDestination
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
-import com.earnzy.ui.screens.*
-import com.earnzy.ui.theme.EarnzyTheme
+import androidx.appcompat.app.AppCompatActivity
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.setupWithNavController
+import com.earnzy.databinding.ActivityMainBinding
+import com.earnzy.ui.fragments.*
 
-class MainActivity : ComponentActivity() {
+class MainActivity : AppCompatActivity() {
+    private lateinit var binding: ActivityMainBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContent {
-            EarnzyTheme {
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
-                ) {
-                    val navController = rememberNavController()
-                    var currentRoute by remember { mutableStateOf("dashboard") }
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-                    Scaffold(
-                        bottomBar = {
-                            NavigationBar {
-                                NavigationBarItem(
-                                    icon = { Icon(Icons.Default.Home, contentDescription = "Dashboard") },
-                                    label = { Text("Home") },
-                                    selected = currentRoute == "dashboard",
-                                    onClick = {
-                                        currentRoute = "dashboard"
-                                        navController.navigate("dashboard") {
-                                            popUpTo(navController.graph.findStartDestination().id) {
-                                                saveState = true
-                                            }
-                                            lazyRestoreState = true
-                                        }
-                                    }
-                                )
-                                NavigationBarItem(
-                                    icon = { Icon(Icons.Default.AssignmentTurnedIn, contentDescription = "Tasks") },
-                                    label = { Text("Tasks") },
-                                    selected = currentRoute == "tasks",
-                                    onClick = {
-                                        currentRoute = "tasks"
-                                        navController.navigate("tasks") {
-                                            popUpTo(navController.graph.findStartDestination().id) {
-                                                saveState = true
-                                            }
-                                            lazyRestoreState = true
-                                        }
-                                    }
-                                )
-                                NavigationBarItem(
-                                    icon = { Icon(Icons.Default.CardGiftcard, contentDescription = "Offers") },
-                                    label = { Text("Offers") },
-                                    selected = currentRoute == "offerwall",
-                                    onClick = {
-                                        currentRoute = "offerwall"
-                                        navController.navigate("offerwall") {
-                                            popUpTo(navController.graph.findStartDestination().id) {
-                                                saveState = true
-                                            }
-                                            lazyRestoreState = true
-                                        }
-                                    }
-                                )
-                                NavigationBarItem(
-                                    icon = { Icon(Icons.Default.EmojiEvents, contentDescription = "Leaderboard") },
-                                    label = { Text("Ranks") },
-                                    selected = currentRoute == "leaderboard",
-                                    onClick = {
-                                        currentRoute = "leaderboard"
-                                        navController.navigate("leaderboard") {
-                                            popUpTo(navController.graph.findStartDestination().id) {
-                                                saveState = true
-                                            }
-                                            lazyRestoreState = true
-                                        }
-                                    }
-                                )
-                                NavigationBarItem(
-                                    icon = { Icon(Icons.Default.AccountCircle, contentDescription = "Profile") },
-                                    label = { Text("Profile") },
-                                    selected = currentRoute == "profile",
-                                    onClick = {
-                                        currentRoute = "profile"
-                                        navController.navigate("profile") {
-                                            popUpTo(navController.graph.findStartDestination().id) {
-                                                saveState = true
-                                            }
-                                            lazyRestoreState = true
-                                        }
-                                    }
-                                )
-                            }
-                        }
-                    ) { padding ->
-                        NavHost(
-                            navController = navController,
-                            startDestination = "dashboard",
-                            modifier = Modifier.fillMaxSize()
-                        ) {
-                            composable("dashboard") {
-                                DashboardScreen(
-                                    modifier = Modifier
-                                        .fillMaxSize()
-                                        .padding(bottom = padding.calculateBottomPadding())
-                                )
-                            }
-                            composable("tasks") {
-                                TasksScreen(
-                                    modifier = Modifier
-                                        .fillMaxSize()
-                                        .padding(bottom = padding.calculateBottomPadding())
-                                )
-                            }
-                            composable("offerwall") {
-                                OfferwallScreen(
-                                    modifier = Modifier
-                                        .fillMaxSize()
-                                        .padding(bottom = padding.calculateBottomPadding())
-                                )
-                            }
-                            composable("referral") {
-                                ReferralScreen(
-                                    modifier = Modifier
-                                        .fillMaxSize()
-                                        .padding(bottom = padding.calculateBottomPadding())
-                                )
-                            }
-                            composable("promo") {
-                                PromoScreen(
-                                    modifier = Modifier
-                                        .fillMaxSize()
-                                        .padding(bottom = padding.calculateBottomPadding())
-                                )
-                            }
-                            composable("rewards") {
-                                RewardsScreen(
-                                    modifier = Modifier
-                                        .fillMaxSize()
-                                        .padding(bottom = padding.calculateBottomPadding())
-                                )
-                            }
-                            composable("withdraw") {
-                                WithdrawScreen(
-                                    modifier = Modifier
-                                        .fillMaxSize()
-                                        .padding(bottom = padding.calculateBottomPadding())
-                                )
-                            }
-                            composable("leaderboard") {
-                                LeaderboardScreen(
-                                    modifier = Modifier
-                                        .fillMaxSize()
-                                        .padding(bottom = padding.calculateBottomPadding())
-                                )
-                            }
-                            composable("profile") {
-                                ProfileScreen(
-                                    modifier = Modifier
-                                        .fillMaxSize()
-                                        .padding(bottom = padding.calculateBottomPadding())
-                                )
-                            }
-                        }
-                    }
+        setupNavigation()
+    }
+
+    private fun setupNavigation() {
+        val navHostFragment = supportFragmentManager
+            .findFragmentById(R.id.fragment_container) as NavHostFragment
+        val navController = navHostFragment.navController
+
+        binding.bottomNavigation.setOnItemSelectedListener { item ->
+            when (item.itemId) {
+                R.id.nav_dashboard -> {
+                    supportFragmentManager.beginTransaction()
+                        .replace(R.id.fragment_container, DashboardFragment())
+                        .commit()
+                    true
                 }
+                R.id.nav_tasks -> {
+                    supportFragmentManager.beginTransaction()
+                        .replace(R.id.fragment_container, TasksFragment())
+                        .commit()
+                    true
+                }
+                R.id.nav_offers -> {
+                    supportFragmentManager.beginTransaction()
+                        .replace(R.id.fragment_container, OffersFragment())
+                        .commit()
+                    true
+                }
+                R.id.nav_profile -> {
+                    supportFragmentManager.beginTransaction()
+                        .replace(R.id.fragment_container, ProfileFragment())
+                        .commit()
+                    true
+                }
+                else -> false
             }
         }
+
+        // Load dashboard by default
+        if (savedInstanceState == null) {
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.fragment_container, DashboardFragment())
+                .commit()
+        }
+    }
+
+    fun navigateTo(fragmentId: Int) {
+        val fragment = when (fragmentId) {
+            R.id.nav_tasks -> TasksFragment()
+            R.id.nav_offers -> OffersFragment()
+            else -> DashboardFragment()
+        }
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.fragment_container, fragment)
+            .addToBackStack(null)
+            .commit()
     }
 }
