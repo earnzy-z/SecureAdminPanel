@@ -24,7 +24,7 @@ import SupportLiveChat from "@/pages/support-live-chat";
 import Leaderboard from "@/pages/leaderboard";
 import Referrals from "@/pages/referrals";
 import Withdrawals from "@/pages/withdrawals";
-import AutoBanRules from "@/pages/auto-ban-rules";
+import AutoBanRules from "@/pages/auto-ban";
 import Settings from "@/pages/settings";
 import AppAnalytics from "@/pages/app-analytics";
 
