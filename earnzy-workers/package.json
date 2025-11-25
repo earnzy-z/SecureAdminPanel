@@ -1,0 +1,21 @@
+{
+  "name": "earnzy-api",
+  "version": "1.0.0",
+  "description": "Earnzy Android App Backend - Cloudflare Workers",
+  "main": "dist/index.js",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "build": "tsc",
+    "type-check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "hono": "^4.0.0",
+    "zod": "^3.22.4"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20240220.0",
+    "typescript": "^5.3.3",
+    "wrangler": "^3.26.0"
+  }
+}

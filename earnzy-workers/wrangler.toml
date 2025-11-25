@@ -1,0 +1,25 @@
+name = "earnzy-api"
+main = "src/index.ts"
+compatibility_date = "2024-01-20"
+
+[env.production]
+routes = [
+  { pattern = "api.earnzy.com/*", zone_name = "earnzy.com" }
+]
+
+[[r2_buckets]]
+binding = "BUCKET"
+bucket_name = "earnzy-uploads"
+
+[env.production.r2_buckets]
+binding = "BUCKET"
+bucket_name = "earnzy-uploads-prod"
+
+[[kv_namespaces]]
+binding = "KV_CACHE"
+id = "your_kv_id"
+
+[build]
+command = "npm run build"
+cwd = "./"
+watch_paths = ["src/**/*.ts"]
