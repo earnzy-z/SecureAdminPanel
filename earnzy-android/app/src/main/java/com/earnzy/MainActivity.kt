@@ -2,10 +2,8 @@ package com.earnzy
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.ui.setupWithNavController
 import com.earnzy.databinding.ActivityMainBinding
-import com.earnzy.ui.fragments.*
+import com.earnzy.ui.fragments.DashboardFragment
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
@@ -19,34 +17,26 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupNavigation() {
-        val navHostFragment = supportFragmentManager
-            .findFragmentById(R.id.fragment_container) as NavHostFragment
-        val navController = navHostFragment.navController
-
         binding.bottomNavigation.setOnItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.nav_dashboard -> {
-                    supportFragmentManager.beginTransaction()
-                        .replace(R.id.fragment_container, DashboardFragment())
-                        .commit()
+                    loadFragment(DashboardFragment(), "Dashboard")
                     true
                 }
                 R.id.nav_tasks -> {
-                    supportFragmentManager.beginTransaction()
-                        .replace(R.id.fragment_container, TasksFragment())
-                        .commit()
+                    loadFragment(com.earnzy.ui.fragments.TasksFragment(), "Tasks")
                     true
                 }
                 R.id.nav_offers -> {
-                    supportFragmentManager.beginTransaction()
-                        .replace(R.id.fragment_container, OffersFragment())
-                        .commit()
+                    loadFragment(com.earnzy.ui.fragments.OffersFragment(), "Offers")
+                    true
+                }
+                R.id.nav_leaderboard -> {
+                    loadFragment(com.earnzy.ui.fragments.LeaderboardFragment(), "Leaderboard")
                     true
                 }
                 R.id.nav_profile -> {
-                    supportFragmentManager.beginTransaction()
-                        .replace(R.id.fragment_container, ProfileFragment())
-                        .commit()
+                    loadFragment(com.earnzy.ui.fragments.ProfileFragment(), "Profile")
                     true
                 }
                 else -> false
@@ -55,21 +45,15 @@ class MainActivity : AppCompatActivity() {
 
         // Load dashboard by default
         if (savedInstanceState == null) {
-            supportFragmentManager.beginTransaction()
-                .replace(R.id.fragment_container, DashboardFragment())
-                .commit()
+            loadFragment(DashboardFragment(), "Dashboard")
         }
     }
 
-    fun navigateTo(fragmentId: Int) {
-        val fragment = when (fragmentId) {
-            R.id.nav_tasks -> TasksFragment()
-            R.id.nav_offers -> OffersFragment()
-            else -> DashboardFragment()
-        }
+    private fun loadFragment(fragment: androidx.fragment.app.Fragment, title: String) {
+        binding.topAppBar.title = title
         supportFragmentManager.beginTransaction()
+            .setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right)
             .replace(R.id.fragment_container, fragment)
-            .addToBackStack(null)
             .commit()
     }
 }

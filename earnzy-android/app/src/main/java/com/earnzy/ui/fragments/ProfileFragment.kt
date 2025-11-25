@@ -51,8 +51,8 @@ class ProfileFragment : BaseFragment() {
             try {
                 ApiClient.api.logout()
                 ApiClient.clearToken()
-                // Navigate to login
                 showSuccess("Logged out successfully")
+                // In production, navigate to LoginActivity
             } catch (e: Exception) {
                 showError("Logout failed: ${e.message}")
             }

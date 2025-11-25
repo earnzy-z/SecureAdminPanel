@@ -40,6 +40,7 @@ class TasksFragment : BaseFragment() {
         binding.tasksRecyclerView.apply {
             layoutManager = LinearLayoutManager(context)
             adapter = taskAdapter
+            setHasFixedSize(true)
         }
     }
 
@@ -61,7 +62,7 @@ class TasksFragment : BaseFragment() {
                 showSuccess("Task completed! +${task.reward} coins")
                 loadTasks()
             } catch (e: Exception) {
-                showError("Failed to complete task: ${e.message}")
+                showError("Task already completed or failed")
             }
         }
     }

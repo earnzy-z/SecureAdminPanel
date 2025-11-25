@@ -25,44 +25,50 @@ class DashboardFragment : BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        loadData()
+        loadUserData()
         setupClickListeners()
     }
 
-    private fun loadData() {
+    private fun loadUserData() {
         viewLifecycleOwner.lifecycleScope.launch {
             try {
                 val user = ApiClient.api.getUser()
                 val balance = ApiClient.api.getBalance()
 
                 binding.coinsText.text = "${balance.coins} Coins"
-
-                setupUIWithData(balance.coins, balance.level, balance.nextLevelCoins)
+                updateProgressBar(balance.coins, balance.nextLevelCoins)
             } catch (e: Exception) {
                 showError("Failed to load data: ${e.message}")
             }
         }
     }
 
-    private fun setupUIWithData(coins: Int, level: Int, nextLevel: Int) {
-        // Update progress bar
-        val progress = (coins * 100) / nextLevel
+    private fun updateProgressBar(coins: Int, nextLevel: Int) {
+        val progress = if (nextLevel > 0) (coins * 100) / nextLevel else 0
         binding.progressBar?.progress = progress.coerceIn(0, 100)
     }
 
     private fun setupClickListeners() {
         binding.tasksButton?.setOnClickListener {
-            (parentFragment as? MainActivity)?.navigateTo(R.id.nav_tasks)
+            navigateToFragment(TasksFragment())
         }
         binding.offersButton?.setOnClickListener {
-            (parentFragment as? MainActivity)?.navigateTo(R.id.nav_offers)
+            navigateToFragment(OffersFragment())
         }
         binding.referButton?.setOnClickListener {
-            // Navigate to referral
+            navigateToFragment(ReferralFragment())
         }
         binding.promosButton?.setOnClickListener {
-            // Navigate to promos
+            navigateToFragment(PromoFragment())
         }
+    }
+
+    private fun navigateToFragment(fragment: BaseFragment) {
+        parentFragmentManager.beginTransaction()
+            .setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right)
+            .replace(R.id.fragment_container, fragment)
+            .addToBackStack(null)
+            .commit()
     }
 
     override fun onDestroyView() {

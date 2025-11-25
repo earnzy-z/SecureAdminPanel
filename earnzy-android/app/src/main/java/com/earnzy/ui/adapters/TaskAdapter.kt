@@ -17,7 +17,7 @@ class TaskAdapter(
                 taskTitle.text = task.title
                 taskDescription.text = task.description
                 taskReward.text = "+${task.reward} Coins"
-                taskCategory.text = task.category
+                taskCategory.text = task.category.capitalize()
                 
                 completeButton.isEnabled = task.completedAt == null
                 completeButton.text = if (task.completedAt != null) "✓ Done" else "Do"
@@ -26,12 +26,16 @@ class TaskAdapter(
                     onCompleteClick(task)
                 }
 
-                // Load image if available
+                // Load image if available with placeholder
                 if (task.imageUrl != null) {
-                    // Load with Coil
+                    // Coil image loading
                     // Glide.with(itemView.context)
                     //     .load(task.imageUrl)
+                    //     .placeholder(R.drawable.ic_placeholder)
                     //     .into(taskImage)
+                } else {
+                    // Set placeholder color
+                    taskImage.setBackgroundColor(android.graphics.Color.parseColor("#6C5CE7"))
                 }
             }
         }
@@ -51,5 +55,9 @@ class TaskAdapter(
     fun updateTasks(newTasks: List<Task>) {
         this.tasks = newTasks
         notifyDataSetChanged()
+    }
+
+    private fun String.capitalize() = this.replaceFirstChar { 
+        if (it.isLowerCase()) it.titlecase() else it.toString() 
     }
 }

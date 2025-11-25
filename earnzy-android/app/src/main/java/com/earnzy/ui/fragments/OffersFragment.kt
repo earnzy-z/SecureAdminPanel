@@ -42,6 +42,9 @@ class OffersFragment : BaseFragment() {
     }
 
     private fun displayOffers(wall: Map<String, List<Offer>>) {
+        var columnIndex = 0
+        var rowIndex = 0
+        
         wall.forEach { (category, offers) ->
             offers.forEach { offer ->
                 val offerView = ItemOfferBinding.inflate(
@@ -52,6 +55,7 @@ class OffersFragment : BaseFragment() {
                 
                 offerView.offerTitle.text = offer.title
                 offerView.offerReward.text = "+${offer.reward}"
+                offerView.claimButton.isEnabled = offer.claimedAt == null
                 
                 offerView.claimButton.setOnClickListener {
                     claimOffer(offer)
@@ -60,9 +64,14 @@ class OffersFragment : BaseFragment() {
                 val params = GridLayout.LayoutParams().apply {
                     width = 0
                     height = GridLayout.LayoutParams.WRAP_CONTENT
-                    columnSpec = GridLayout.spec(GridLayout.UNDEFINED, 1f)
+                    columnSpec = GridLayout.spec(columnIndex, 1f)
+                    rowSpec = GridLayout.spec(rowIndex)
                 }
+                
                 binding.offersGrid.addView(offerView.root, params)
+                
+                columnIndex = (columnIndex + 1) % 2
+                if (columnIndex == 0) rowIndex++
             }
         }
     }
@@ -71,9 +80,10 @@ class OffersFragment : BaseFragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             try {
                 ApiClient.api.claimOffer(offer.id)
-                showSuccess("Offer claimed! Check your wallet.")
+                showSuccess("Offer claimed successfully!")
+                loadOffers()
             } catch (e: Exception) {
-                showError("Already claimed: ${e.message}")
+                showError("Offer already claimed")
             }
         }
     }

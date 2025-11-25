@@ -37,13 +37,13 @@ class LeaderboardFragment : BaseFragment() {
         binding.leaderboardRecyclerView.apply {
             layoutManager = LinearLayoutManager(context)
             adapter = this@LeaderboardFragment.adapter
+            setHasFixedSize(true)
         }
     }
 
     private fun loadLeaderboard() {
         viewLifecycleOwner.lifecycleScope.launch {
             try {
-                // Mock leaderboard data - in production, fetch from API
                 val leaderboardData = listOf(
                     LeaderboardEntry(1, "Player 1", 50000, 50),
                     LeaderboardEntry(2, "Player 2", 45000, 48),
