@@ -1,0 +1,309 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    android:background="@color/material_dynamic_neutral95">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="16dp"
+        tools:context=".ProfileFragment">
+
+        <!-- Profile Header Section -->
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/profile_image"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:layout_marginTop="32dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/ic_profile_placeholder"
+            app:shapeAppearanceOverlay="@style/ShapeAppearance.App.CircleImageView"
+            app:strokeColor="@color/material_dynamic_primary40"
+            app:strokeWidth="2dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:contentDescription="@string/profile_picture_description" />
+
+        <TextView
+            android:id="@+id/profile_display_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="24dp"
+            android:text="@string/default_user_name"
+            android:textAlignment="center"
+            android:textColor="@color/material_dynamic_neutral10"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/profile_image" />
+
+        <TextView
+            android:id="@+id/profile_handle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:layout_marginEnd="24dp"
+            android:text="@string/default_user_handle"
+            android:textAlignment="center"
+            android:textColor="@color/material_dynamic_neutral40"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/profile_display_name" />
+
+        <TextView
+            android:id="@+id/profile_bio"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="32dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="32dp"
+            android:ellipsize="end"
+            android:maxLines="3"
+            android:text="@string/default_user_bio"
+            android:textAlignment="center"
+            android:textColor="@color/material_dynamic_neutral20"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/profile_handle" />
+
+        <!-- Statistics Section -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/stats_layout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="24dp"
+            android:layout_marginEnd="24dp"
+            android:background="@drawable/bg_rounded_corners"
+            android:paddingTop="16dp"
+            android:paddingBottom="16dp"
+            android:elevation="2dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/profile_bio">
+
+            <!-- Posts -->
+            <TextView
+                android:id="@+id/posts_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/default_posts_count"
+                android:textColor="@color/material_dynamic_neutral10"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toStartOf="@+id/followers_count"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/posts_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/posts_label"
+                android:textColor="@color/material_dynamic_neutral40"
+                android:textSize="14sp"
+                app:layout_constraintEnd_toEndOf="@+id/posts_count"
+                app:layout_constraintStart_toStartOf="@+id/posts_count"
+                app:layout_constraintTop_toBottomOf="@+id/posts_count" />
+
+            <!-- Followers -->
+            <TextView
+                android:id="@+id/followers_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/default_followers_count"
+                android:textColor="@color/material_dynamic_neutral10"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toStartOf="@+id/following_count"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/posts_count"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/followers_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/followers_label"
+                android:textColor="@color/material_dynamic_neutral40"
+                android:textSize="14sp"
+                app:layout_constraintEnd_toEndOf="@+id/followers_count"
+                app:layout_constraintStart_toStartOf="@+id/followers_count"
+                app:layout_constraintTop_toBottomOf="@+id/followers_count" />
+
+            <!-- Following -->
+            <TextView
+                android:id="@+id/following_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/default_following_count"
+                android:textColor="@color/material_dynamic_neutral10"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/followers_count"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/following_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/following_label"
+                android:textColor="@color/material_dynamic_neutral40"
+                android:textSize="14sp"
+                app:layout_constraintEnd_toEndOf="@+id/following_count"
+                app:layout_constraintStart_toStartOf="@+id/following_count"
+                app:layout_constraintTop_toBottomOf="@+id/following_count" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <!-- Action Buttons Section -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_edit_profile"
+            style="@style/Widget.Material3.Button.OutlinedButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="32dp"
+            android:layout_marginEnd="24dp"
+            android:paddingVertical="12dp"
+            android:text="@string/edit_profile_button"
+            android:textAllCaps="false"
+            android:textColor="@color/material_dynamic_primary40"
+            app:cornerRadius="24dp"
+            app:strokeColor="@color/material_dynamic_primary40"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/stats_layout" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_settings"
+            style="@style/Widget.Material3.Button.TextButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:layout_marginEnd="24dp"
+            android:paddingVertical="12dp"
+            android:text="@string/settings_button"
+            android:textAllCaps="false"
+            android:textColor="@color/material_dynamic_neutral20"
+            app:cornerRadius="24dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/btn_edit_profile" />
+
+        <!-- More Features Section -->
+        <TextView
+            android:id="@+id/section_header_activity"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="32dp"
+            android:layout_marginEnd="24dp"
+            android:text="@string/recent_activity_header"
+            android:textColor="@color/material_dynamic_neutral10"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/btn_settings" />
+
+        <LinearLayout
+            android:id="@+id/recent_activity_container"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginStart="24dp"
+            android:layout_marginEnd="24dp"
+            android:layout_marginTop="16dp"
+            android:padding="16dp"
+            android:background="@drawable/bg_rounded_corners"
+            android:elevation="2dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/section_header_activity">
+
+            <!-- Placeholder for recent activity item 1 -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/activity_item_1"
+                android:textColor="@color/material_dynamic_neutral20"
+                android:textSize="16sp"
+                android:drawableStart="@drawable/ic_activity_icon"
+                android:drawablePadding="8dp"
+                android:gravity="center_vertical"
+                android:paddingVertical="8dp" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/material_dynamic_neutral80"
+                android:layout_marginVertical="4dp" />
+
+            <!-- Placeholder for recent activity item 2 -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/activity_item_2"
+                android:textColor="@color/material_dynamic_neutral20"
+                android:textSize="16sp"
+                android:drawableStart="@drawable/ic_activity_icon"
+                android:drawablePadding="8dp"
+                android:gravity="center_vertical"
+                android:paddingVertical="8dp" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/material_dynamic_neutral80"
+                android:layout_marginVertical="4dp" />
+
+            <!-- Placeholder for recent activity item 3 -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/activity_item_3"
+                android:textColor="@color/material_dynamic_neutral20"
+                android:textSize="16sp"
+                android:drawableStart="@drawable/ic_activity_icon"
+                android:drawablePadding="8dp"
+                android:gravity="center_vertical"
+                android:paddingVertical="8dp" />
+
+        </LinearLayout>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_logout"
+            style="@style/Widget.Material3.Button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="48dp"
+            android:layout_marginEnd="24dp"
+            android:backgroundTint="@color/material_dynamic_error40"
+            android:paddingVertical="12dp"
+            android:text="@string/logout_button"
+            android:textAllCaps="false"
+            android:textColor="@color/material_dynamic_error90"
+            app:cornerRadius="24dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/recent_activity_container"
+            app:layout_constraintVertical_bias="1.0" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</ScrollView>
