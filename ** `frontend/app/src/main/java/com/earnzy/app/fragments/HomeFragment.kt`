@@ -1,0 +1,782 @@
+package com.earnzy.app.fragments
+
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.compose.animation.*
+import androidx.compose.animation.core.*
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
+import androidx.navigation.fragment.findNavController
+import com.google.accompanist.swiperefresh.SwipeRefresh
+import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
+
+// --- Data Models (could be in a separate data package) ---
+data class UserProfile(
+    val name: String,
+    val balance: Double,
+    val avatarUrl: String? = null
+)
+
+data class Task(
+    val id: String,
+    val title: String,
+    val description: String,
+    val rewardPoints: Int,
+    val iconResId: Int? = null, // Using Int for simplicity, could be URL or ImageVector
+    val backgroundColor: Color = Color.LightGray.copy(alpha = 0.2f)
+)
+
+data class ActivityItem(
+    val id: String,
+    val description: String,
+    val points: Int,
+    val timestamp: Long
+)
+
+// --- Backend Simulation (could be in a separate repository package) ---
+interface EarnzyRepository {
+    suspend fun fetchUserProfile(): UserProfile
+    suspend fun fetchTasks(): List<Task>
+    suspend fun fetchRecentActivity(): List<ActivityItem>
+}
+
+class MockEarnzyRepository : EarnzyRepository {
+    override suspend fun fetchUserProfile(): UserProfile {
+        delay(1000) // Simulate network delay
+        return UserProfile("John Doe", 1250.75, "https://example.com/avatar.jpg")
+    }
+
+    override suspend fun fetchTasks(): List<Task> {
+        delay(1500)
+        return listOf(
+            Task("1", "Complete Survey", "Share your opinions and earn quick points!", 50, null, Color(0xFFFDD835)), // Yellow
+            Task("2", "Watch Video Ad", "Watch a short video and earn easy points.", 10, null, Color(0xFF8BC34A)), // Green
+            Task("3", "Install & Review App", "Try out new apps for big rewards!", 200, null, Color(0xFF2196F3)), // Blue
+            Task("4", "Refer a Friend", "Invite friends to Earnzy and earn a bonus!", 150, null, Color(0xFFFF9800)), // Orange
+            Task("5", "Daily Login Bonus", "Login daily to claim your reward!", 5, null, Color(0xFF9C27B0)),  // Purple
+            Task("6", "Play Mini-Game", "Have fun and earn while playing games.", 30, null, Color(0xFFEC407A)) // Pink
+        )
+    }
+
+    override suspend fun fetchRecentActivity(): List<ActivityItem> {
+        delay(800)
+        return listOf(
+            ActivityItem("act1", "Completed Survey #123", 50, System.currentTimeMillis() - 3600000),
+            ActivityItem("act2", "Watched Ad", 10, System.currentTimeMillis() - 7200000),
+            ActivityItem("act3", "Daily Bonus", 5, System.currentTimeMillis() - 10800000),
+            ActivityItem("act4", "Installed 'Cool App'", 200, System.currentTimeMillis() - 14400000)
+        )
+    }
+}
+
+// --- ViewModel (could be in a separate viewmodel package) ---
+class HomeViewModel(private val repository: EarnzyRepository = MockEarnzyRepository()) : ViewModel() {
+
+    private val _userProfile = MutableStateFlow<UserProfile?>(null)
+    val userProfile: StateFlow<UserProfile?> = _userProfile
+
+    private val _tasks = MutableStateFlow<List<Task>>(emptyList())
+    val tasks: StateFlow<List<Task>> = _tasks
+
+    private val _recentActivity = MutableStateFlow<List<ActivityItem>>(emptyList())
+    val recentActivity: StateFlow<List<ActivityItem>> = _recentActivity
+
+    private val _isLoading = MutableStateFlow(false)
+    val isLoading: StateFlow<Boolean> = _isLoading
+
+    private val _error = MutableStateFlow<String?>(null)
+    val error: StateFlow<String?> = _error
+
+    init {
+        loadHomeScreenData()
+    }
+
+    fun loadHomeScreenData(forceRefresh: Boolean = false) {
+        if (_isLoading.value && !forceRefresh) return
+
+        viewModelScope.launch {
+            _isLoading.value = true
+            _error.value = null
+            try {
+                // Fetch all data concurrently
+                val profileDeferred = launch { _userProfile.value = repository.fetchUserProfile() }
+                val tasksDeferred = launch { _tasks.value = repository.fetchTasks() }
+                val activityDeferred = launch { _recentActivity.value = repository.fetchRecentActivity() }
+
+                profileDeferred.join()
+                tasksDeferred.join()
+                activityDeferred.join()
+
+            } catch (e: Exception) {
+                _error.value = "Failed to load data: ${e.localizedMessage ?: "Unknown error"}"
+            } finally {
+                _isLoading.value = false
+            }
+        }
+    }
+}
+
+// --- HomeFragment ---
+class HomeFragment : Fragment() {
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        return ComposeView(requireContext()).apply {
+            setContent {
+                EarnzyTheme {
+                    val navController = findNavController()
+                    HomeScreen(navController = navController)
+                }
+            }
+        }
+    }
+}
+
+// --- Composables for HomeScreen ---
+
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class, ExperimentalLayoutApi::class)
+@Composable
+fun HomeScreen(navController: NavController, viewModel: HomeViewModel = viewModel()) {
+    val userProfile by viewModel.userProfile.collectAsState()
+    val tasks by viewModel.tasks.collectAsState()
+    val recentActivity by viewModel.recentActivity.collectAsState()
+    val isLoading by viewModel.isLoading.collectAsState()
+    val error by viewModel.error.collectAsState()
+
+    val swipeRefreshState = rememberSwipeRefreshState(isRefreshing = isLoading)
+
+    Scaffold(
+        topBar = {
+            HomeAppBar(userProfile = userProfile) {
+                // Handle profile click, e.g., navigate to profile screen
+                // navController.navigate(R.id.action_homeFragment_to_profileFragment)
+            }
+        }
+    ) { paddingValues ->
+        SwipeRefresh(
+            state = swipeRefreshState,
+            onRefresh = { viewModel.loadHomeScreenData(forceRefresh = true) },
+            modifier = Modifier
+                .padding(paddingValues)
+                .fillMaxSize()
+        ) {
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(MaterialTheme.colorScheme.background)
+            ) {
+                item {
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    // User Balance Card with animation
+                    AnimatedContent(
+                        targetState = userProfile,
+                        transitionSpec = {
+                            if (targetState != null) {
+                                slideInVertically(animationSpec = tween(durationMillis = 500)) { height -> height } + fadeIn(animationSpec = tween(durationMillis = 500)) with
+                                        slideOutVertically(animationSpec = tween(durationMillis = 500)) { height -> -height } + fadeOut(animationSpec = tween(durationMillis = 500))
+                            } else {
+                                fadeIn() with fadeOut()
+                            }
+                        }, label = "balance_card_animation"
+                    ) { profile ->
+                        if (profile != null) {
+                            BalanceCard(profile = profile)
+                        } else if (isLoading) {
+                            LoadingBalanceCard() // A skeleton loader
+                        } else {
+                            // Optionally show an error or placeholder if no profile and not loading
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(horizontal = 16.dp, vertical = 8.dp)
+                                    .height(120.dp)
+                                    .background(MaterialTheme.colorScheme.surfaceVariant, RoundedCornerShape(20.dp)),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Text("Could not load balance.", color = MaterialTheme.colorScheme.onSurfaceVariant)
+                            }
+                        }
+                    }
+
+                    // Quick Actions Section
+                    QuickActionsSection(navController = navController)
+
+                    // Task Section
+                    AnimatedVisibility(
+                        visible = tasks.isNotEmpty(),
+                        enter = expandVertically(animationSpec = spring(dampingRatio = Spring.DampingRatioMediumBouncy, stiffness = Spring.StiffnessLow)) + fadeIn(),
+                        exit = shrinkVertally() + fadeOut()
+                    ) {
+                        Column {
+                            SectionHeader(title = "Earn & Explore")
+                            TasksGrid(tasks = tasks) { task ->
+                                // Handle task click, e.g., navigate to task detail
+                                // navController.navigate(R.id.action_homeFragment_to_taskDetailFragment, bundleOf("taskId" to task.id))
+                            }
+                        }
+                    }
+                    AnimatedVisibility(
+                        visible = tasks.isEmpty() && !isLoading && error == null,
+                        enter = expandVertically() + fadeIn(),
+                        exit = shrinkVertically() + fadeOut()
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(16.dp),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text("No tasks available right now. Check back later!", color = MaterialTheme.colorScheme.onSurfaceVariant)
+                        }
+                    }
+
+
+                    // Recent Activity Section
+                    AnimatedVisibility(
+                        visible = recentActivity.isNotEmpty(),
+                        enter = expandVertically(animationSpec = spring(dampingRatio = Spring.DampingRatioMediumBouncy, stiffness = Spring.StiffnessLow)) + fadeIn(),
+                        exit = shrinkVertically() + fadeOut()
+                    ) {
+                        Column {
+                            SectionHeader(title = "Recent Activity")
+                            RecentActivityList(activityItems = recentActivity)
+                        }
+                    }
+                    AnimatedVisibility(
+                        visible = recentActivity.isEmpty() && !isLoading && error == null,
+                        enter = expandVertically() + fadeIn(),
+                        exit = shrinkVertically() + fadeOut()
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(16.dp),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text("No recent activity.", color = MaterialTheme.colorScheme.onSurfaceVariant)
+                        }
+                    }
+
+                    // Error display
+                    error?.let {
+                        Text(
+                            text = it,
+                            color = MaterialTheme.colorScheme.error,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(16.dp),
+                            textAlign = TextAlign.Center
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.height(24.dp))
+                }
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun HomeAppBar(userProfile: UserProfile?, onProfileClick: () -> Unit) {
+    TopAppBar(
+        title = {
+            Text(
+                text = "Earnzy",
+                style = MaterialTheme.typography.headlineMedium,
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.onSurface
+            )
+        },
+        actions = {
+            IconButton(onClick = { /* Handle notifications click */ }) {
+                Icon(Icons.Default.Notifications, contentDescription = "Notifications")
+            }
+            if (userProfile != null) {
+                IconButton(onClick = onProfileClick) {
+                    // In a real app, use Coil/Glide for image loading from avatarUrl
+                    Icon(Icons.Default.AccountCircle, contentDescription = "Profile", modifier = Modifier.size(32.dp))
+                }
+            } else {
+                // Placeholder for profile
+                CircularProgressIndicator(modifier = Modifier.size(32.dp), strokeWidth = 2.dp)
+            }
+        },
+        colors = TopAppBarDefaults.topAppBarColors(
+            containerColor = MaterialTheme.colorScheme.surface,
+            titleContentColor = MaterialTheme.colorScheme.onSurface,
+            actionIconContentColor = MaterialTheme.colorScheme.onSurfaceVariant
+        )
+    )
+}
+
+@Composable
+fun BalanceCard(profile: UserProfile) {
+    Card(
+        shape = RoundedCornerShape(20.dp),
+        colors = CardDefaults.cardColors(containerColor = Color.Transparent),
+        elevation = CardDefaults.cardElevation(0.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 8.dp)
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(
+                    brush = Brush.horizontalGradient(
+                        colors = listOf(MaterialTheme.colorScheme.primary, MaterialTheme.colorScheme.primaryContainer)
+                    ),
+                    shape = RoundedCornerShape(20.dp)
+                )
+                .padding(20.dp)
+        ) {
+            Column {
+                Text(
+                    text = "Current Balance",
+                    style = MaterialTheme.typography.labelMedium,
+                    color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.8f)
+                )
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(
+                    text = "$${String.format("%.2f", profile.balance)}",
+                    style = MaterialTheme.typography.headlineLarge,
+                    fontWeight = FontWeight.ExtraBold,
+                    color = MaterialTheme.colorScheme.onPrimary
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+                // Can add more features like a daily goal progress bar or recent points animation
+            }
+        }
+    }
+}
+
+@Composable
+fun LoadingBalanceCard() {
+    Card(
+        shape = RoundedCornerShape(20.dp),
+        colors = CardDefaults.cardColors(containerColor = Color.Transparent),
+        elevation = CardDefaults.cardElevation(0.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 8.dp)
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(
+                    color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
+                    shape = RoundedCornerShape(20.dp)
+                )
+                .padding(20.dp)
+        ) {
+            Column {
+                val infiniteTransition = rememberInfiniteTransition(label = "shimmer_transition")
+                val animatedValue by infiniteTransition.animateFloat(
+                    initialValue = 0f,
+                    targetValue = 1f,
+                    animationSpec = infiniteRepeatable(
+                        animation = tween(durationMillis = 1000, easing = LinearEasing),
+                        repeatMode = RepeatMode.Reverse
+                    ), label = "shimmer_animation"
+                )
+                val shimmerBrush = Brush.horizontalGradient(
+                    colors = listOf(
+                        MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f),
+                        MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.7f),
+                        MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f)
+                    ),
+                    startX = 0f,
+                    endX = animatedValue * 1000f
+                )
+
+                Spacer(modifier = Modifier.height(10.dp))
+                Box(
+                    modifier = Modifier
+                        .width(120.dp)
+                        .height(20.dp)
+                        .clip(RoundedCornerShape(4.dp))
+                        .background(shimmerBrush)
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                Box(
+                    modifier = Modifier
+                        .width(200.dp)
+                        .height(30.dp)
+                        .clip(RoundedCornerShape(4.dp))
+                        .background(shimmerBrush)
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+            }
+        }
+    }
+}
+
+@Composable
+fun QuickActionsSection(navController: NavController) {
+    Column(modifier = Modifier.padding(vertical = 16.dp)) {
+        SectionHeader(title = "Quick Actions")
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp),
+            horizontalArrangement = Arrangement.SpaceAround
+        ) {
+            QuickActionButton(icon = Icons.Default.Wallet, text = "Redeem") {
+                // navController.navigate(R.id.action_homeFragment_to_redeemFragment)
+            }
+            QuickActionButton(icon = Icons.Default.GroupAdd, text = "Invite") {
+                // navController.navigate(R.id.action_homeFragment_to_inviteFragment)
+            }
+            QuickActionButton(icon = Icons.Default.History, text = "History") {
+                // navController.navigate(R.id.action_homeFragment_to_historyFragment)
+            }
+            QuickActionButton(icon = Icons.Default.Support, text = "Support") {
+                // navController.navigate(R.id.action_homeFragment_to_supportFragment)
+            }
+        }
+    }
+}
+
+@Composable
+fun QuickActionButton(icon: androidx.compose.ui.graphics.vector.ImageVector, text: String, onClick: () -> Unit) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier
+            .clickable(onClick = onClick)
+            .padding(8.dp)
+    ) {
+        Card(
+            shape = CircleShape,
+            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer),
+            modifier = Modifier.size(56.dp)
+        ) {
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    imageVector = icon,
+                    contentDescription = text,
+                    tint = MaterialTheme.colorScheme.onSecondaryContainer,
+                    modifier = Modifier.size(32.dp)
+                )
+            }
+        }
+        Spacer(modifier = Modifier.height(4.dp))
+        Text(
+            text = text,
+            style = MaterialTheme.typography.labelSmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
+    }
+}
+
+
+@OptIn(ExperimentalLayoutApi::class)
+@Composable
+fun TasksGrid(tasks: List<Task>, onTaskClick: (Task) -> Unit) {
+    FlowRow(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 8.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+        maxItemsInEachRow = 2 // Adjust based on desired layout, for two columns
+    ) {
+        tasks.forEach { task ->
+            TaskItem(task = task, modifier = Modifier.weight(1f), onClick = { onTaskClick(task) })
+        }
+    }
+}
+
+@Composable
+fun TaskItem(task: Task, modifier: Modifier = Modifier, onClick: () -> Unit) {
+    Card(
+        shape = RoundedCornerShape(16.dp),
+        colors = CardDefaults.cardColors(containerColor = task.backgroundColor),
+        elevation = CardDefaults.cardElevation(2.dp),
+        modifier = modifier
+            .fillMaxWidth()
+            .height(120.dp) // Fixed height for consistent look
+            .clickable(onClick = onClick)
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp),
+            verticalArrangement = Arrangement.SpaceBetween
+        ) {
+            Column {
+                Text(
+                    text = task.title,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.9f) // Adjust based on background color for contrast
+                )
+                Text(
+                    text = task.description,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    maxLines = 2,
+                    overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis
+                )
+            }
+            Text(
+                text = "+${task.rewardPoints} Points",
+                style = MaterialTheme.typography.labelLarge,
+                fontWeight = FontWeight.SemiBold,
+                color = MaterialTheme.colorScheme.onSurface
+            )
+        }
+    }
+}
+
+@Composable
+fun RecentActivityList(activityItems: List<ActivityItem>) {
+    Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)) {
+        activityItems.forEach { activity ->
+            ActivityItemRow(activity = activity)
+            Divider(
+                modifier = Modifier.padding(vertical = 8.dp),
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f)
+            )
+        }
+    }
+}
+
+@Composable
+fun ActivityItemRow(activity: ActivityItem) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 4.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Icon(
+            imageVector = Icons.Default.CheckCircle, // Or a more specific icon based on activity type
+            contentDescription = null,
+            tint = MaterialTheme.colorScheme.primary,
+            modifier = Modifier.size(24.dp)
+        )
+        Spacer(modifier = Modifier.width(12.dp))
+        Column(modifier = Modifier.weight(1f)) {
+            Text(
+                text = activity.description,
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurface
+            )
+            Text(
+                text = "Earned ${activity.points} points • ${timeAgo(activity.timestamp)}",
+                style = MaterialTheme.typography.labelSmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        }
+        Text(
+            text = "+${activity.points}",
+            style = MaterialTheme.typography.titleSmall,
+            fontWeight = FontWeight.SemiBold,
+            color = MaterialTheme.colorScheme.primary
+        )
+    }
+}
+
+@Composable
+fun SectionHeader(title: String, modifier: Modifier = Modifier) {
+    Text(
+        text = title,
+        style = MaterialTheme.typography.titleLarge,
+        fontWeight = FontWeight.Bold,
+        modifier = modifier.padding(horizontal = 16.dp, vertical = 12.dp),
+        color = MaterialTheme.colorScheme.onSurface
+    )
+}
+
+// Helper function for time formatting
+fun timeAgo(timestamp: Long): String {
+    val now = System.currentTimeMillis()
+    val diff = now - timestamp
+    val seconds = diff / 1000
+    val minutes = seconds / 60
+    val hours = minutes / 60
+    val days = hours / 24
+
+    return when {
+        seconds < 60 -> "$seconds seconds ago"
+        minutes < 60 -> "$minutes minutes ago"
+        hours < 24 -> "$hours hours ago"
+        days < 7 -> "$days days ago"
+        else -> java.text.SimpleDateFormat("MMM dd, yyyy", java.util.Locale.getDefault()).format(java.util.Date(timestamp))
+    }
+}
+
+// --- Theme Definition (could be in a separate ui.theme package) ---
+// Minimalistic Theme for demonstration. In a real app, this would be more elaborate.
+object EarnzyTheme {
+    @Composable
+    operator fun invoke(
+        darkTheme: Boolean = isSystemInDarkTheme(),
+        content: @Composable () -> Unit
+    ) {
+        val colors = if (darkTheme) {
+            DarkColorScheme
+        } else {
+            LightColorScheme
+        }
+
+        MaterialTheme(
+            colorScheme = colors,
+            typography = Typography,
+            content = content
+        )
+    }
+
+    val LightColorScheme = lightColorScheme(
+        primary = Color(0xFF4CAF50), // Green
+        primaryContainer = Color(0xFF8BC34A), // Lighter Green
+        onPrimary = Color.White,
+        secondary = Color(0xFF03A9F4), // Blue
+        secondaryContainer = Color(0xFF81D4FA), // Lighter Blue
+        onSecondary = Color.White,
+        tertiary = Color(0xFFFFC107), // Amber
+        onTertiary = Color.Black,
+        background = Color(0xFFF0F2F5), // Light Grey background
+        onBackground = Color(0xFF1F1F1F),
+        surface = Color.White,
+        onSurface = Color(0xFF1F1F1F),
+        surfaceVariant = Color(0xFFE0E0E0),
+        onSurfaceVariant = Color(0xFF424242),
+        error = Color(0xFFB00020),
+        onError = Color.White
+    )
+
+    val DarkColorScheme = darkColorScheme(
+        primary = Color(0xFF66BB6A), // Green
+        primaryContainer = Color(0xFF388E3C), // Darker Green
+        onPrimary = Color.White,
+        secondary = Color(0xFF29B6F6), // Blue
+        secondaryContainer = Color(0xFF0288D1), // Darker Blue
+        onSecondary = Color.White,
+        tertiary = Color(0xFFFFCA28), // Amber
+        onTertiary = Color.Black,
+        background = Color(0xFF121212), // Dark background
+        onBackground = Color(0xFFE0E0E0),
+        surface = Color(0xFF1E1E1E),
+        onSurface = Color(0xFFE0E0E0),
+        surfaceVariant = Color(0xFF424242),
+        onSurfaceVariant = Color(0xFFBDBDBD),
+        error = Color(0xFFCF6679),
+        onError = Color.Black
+    )
+
+    val Typography = Typography(
+        headlineLarge = TextStyle(
+            fontFamily = FontFamily.Default,
+            fontWeight = FontWeight.Bold,
+            fontSize = 32.sp,
+            lineHeight = 40.sp,
+            letterSpacing = 0.sp
+        ),
+        headlineMedium = TextStyle(
+            fontFamily = FontFamily.Default,
+            fontWeight = FontWeight.Bold,
+            fontSize = 28.sp,
+            lineHeight = 36.sp,
+            letterSpacing = 0.sp
+        ),
+        titleLarge = TextStyle(
+            fontFamily = FontFamily.Default,
+            fontWeight = FontWeight.Bold,
+            fontSize = 22.sp,
+            lineHeight = 28.sp,
+            letterSpacing = 0.sp
+        ),
+        titleMedium = TextStyle(
+            fontFamily = FontFamily.Default,
+            fontWeight = FontWeight.SemiBold,
+            fontSize = 16.sp,
+            lineHeight = 24.sp,
+            letterSpacing = 0.15.sp
+        ),
+        titleSmall = TextStyle(
+            fontFamily = FontFamily.Default,
+            fontWeight = FontWeight.Medium,
+            fontSize = 14.sp,
+            lineHeight = 20.sp,
+            letterSpacing = 0.1.sp
+        ),
+        bodyMedium = TextStyle(
+            fontFamily = FontFamily.Default,
+            fontWeight = FontWeight.Normal,
+            fontSize = 16.sp,
+            lineHeight = 24.sp,
+            letterSpacing = 0.5.sp
+        ),
+        bodySmall = TextStyle(
+            fontFamily = FontFamily.Default,
+            fontWeight = FontWeight.Normal,
+            fontSize = 14.sp,
+            lineHeight = 20.sp,
+            letterSpacing = 0.25.sp
+        ),
+        labelLarge = TextStyle(
+            fontFamily = FontFamily.Default,
+            fontWeight = FontWeight.Medium,
+            fontSize = 14.sp,
+            lineHeight = 20.sp,
+            letterSpacing = 0.1.sp
+        ),
+        labelMedium = TextStyle(
+            fontFamily = FontFamily.Default,
+            fontWeight = FontWeight.Medium,
+            fontSize = 12.sp,
+            lineHeight = 16.sp,
+            letterSpacing = 0.5.sp
+        ),
+        labelSmall = TextStyle(
+            fontFamily = FontFamily.Default,
+            fontWeight = FontWeight.Medium,
+            fontSize = 11.sp,
+            lineHeight = 16.sp,
+            letterSpacing = 0.5.sp
+        )
+    )
+}

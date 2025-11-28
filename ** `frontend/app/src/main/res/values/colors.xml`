@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Primary Palette - A deep, professional blue/grey -->
+    <color name="colorPrimary">#2C3E50</color>
+    <color name="colorPrimaryVariant">#1A242F</color>
+    <color name="colorOnPrimary">#FFFFFF</color>
+
+    <!-- Secondary/Accent Palette - A vibrant, professional blue -->
+    <color name="colorSecondary">#3498DB</color>
+    <color name="colorSecondaryVariant">#217DBB</color>
+    <color name="colorOnSecondary">#FFFFFF</color>
+
+    <!-- Background and Surface Colors -->
+    <color name="colorBackground">#ECF0F1</color>
+    <color name="colorOnBackground">#212121</color>
+    <color name="colorSurface">#FFFFFF</color>
+    <color name="colorOnSurface">#212121</color>
+
+    <!-- Error, Success, Warning Colors -->
+    <color name="colorError">#D32F2F</color>
+    <color name="colorOnError">#FFFFFF</color>
+    <color name="colorSuccess">#4CAF50</color>
+    <color name="colorOnSuccess">#FFFFFF</color>
+    <color name="colorWarning">#FFA000</color>
+    <color name="colorOnWarning">#FFFFFF</color>
+
+    <!-- Text Colors -->
+    <color name="textColorPrimary">#212121</color>
+    <color name="textColorSecondary">#757575</color>
+    <color name="textColorHint">#BDBDBD</color>
+    <color name="textColorDisabled">#BDBDBD</color>
+
+    <!-- Divider Color -->
+    <color name="colorDivider">#E0E0E0</color>
+
+    <!-- Common UI Colors -->
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+    <color name="transparent">#00000000</color>
+
+</resources>

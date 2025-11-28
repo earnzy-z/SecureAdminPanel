@@ -1,0 +1,314 @@
+package com.earnzy.app.fragments
+
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.viewModelScope
+import androidx.navigation.fragment.findNavController
+import com.earnzy.app.R
+import com.earnzy.app.databinding.FragmentProfileBinding
+import com.google.android.material.snackbar.Snackbar
+import com.bumptech.glide.Glide
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+
+// Data classes for UserProfile and UserSettings, typically in a 'models' package.
+// Placed here to make the file self-contained as per the prompt's requirement for a single file output.
+data class UserProfile(
+    val id: String,
+    val name: String,
+    val email: String,
+    val avatarUrl: String?,
+    val settings: UserSettings
+)
+
+data class UserSettings(
+    var notificationsEnabled: Boolean = true,
+    var twoFactorEnabled: Boolean = false,
+    var appTheme: String = "system_default", // light, dark, system_default
+    var appLanguage: String = "en"
+)
+
+// ViewModel for ProfileFragment, typically in a 'viewmodels' package.
+// Placed here to make the file self-contained as per the prompt's requirement for a single file output.
+class ProfileViewModel : androidx.lifecycle.ViewModel() {
+    private val _userProfile = MutableLiveData<UserProfile>()
+    val userProfile: LiveData<UserProfile> get() = _userProfile
+
+    private val _loading = MutableLiveData<Boolean>()
+    val loading: LiveData<Boolean> get() = _loading
+
+    private val _errorMessage = MutableLiveData<String?>()
+    val errorMessage: LiveData<String?> get() = _errorMessage
+
+    private val _successMessage = MutableLiveData<String?>()
+    val successMessage: LiveData<String?> get() = _successMessage
+
+    /**
+     * Simulates fetching user profile data from a backend.
+     * In a real application, this would involve a Repository layer.
+     */
+    fun loadUserProfile() {
+        _loading.value = true
+        viewModelScope.launch {
+            delay(1500) // Simulate network delay
+            try {
+                // Replace with actual API call to your backend
+                val dummyProfile = UserProfile(
+                    id = "user123",
+                    name = "Earnzy User",
+                    email = "user@earnzy.com",
+                    avatarUrl = "https://picsum.photos/200/200?random=1", // Example URL for a random image
+                    settings = UserSettings(
+                        notificationsEnabled = true,
+                        twoFactorEnabled = false,
+                        appTheme = "system_default",
+                        appLanguage = "en"
+                    )
+                )
+                _userProfile.postValue(dummyProfile)
+                _successMessage.postValue("Profile loaded successfully!")
+            } catch (e: Exception) {
+                _errorMessage.postValue("Failed to load profile: ${e.message}")
+            } finally {
+                _loading.postValue(false)
+            }
+        }
+    }
+
+    /**
+     * Simulates updating the notification setting on the backend.
+     * In a real application, this would involve a Repository layer.
+     */
+    fun updateNotificationSetting(enabled: Boolean) {
+        val currentProfile = _userProfile.value ?: return
+        if (currentProfile.settings.notificationsEnabled == enabled) return // No change needed
+
+        _loading.value = true
+        viewModelScope.launch {
+            delay(800) // Simulate network delay
+            try {
+                // Replace with actual API call to update the setting on your backend
+                currentProfile.settings.notificationsEnabled = enabled
+                _userProfile.postValue(currentProfile) // Update UI immediately after successful API call
+                _successMessage.postValue("Notifications ${if (enabled) "enabled" else "disabled"}")
+            } catch (e: Exception) {
+                _errorMessage.postValue("Failed to update notification setting: ${e.message}")
+            } finally {
+                _loading.postValue(false)
+            }
+        }
+    }
+
+    /**
+     * Simulates logging out the user from the backend.
+     * In a real application, this would clear session tokens, user data, etc.
+     */
+    fun logoutUser() {
+        _loading.value = true
+        viewModelScope.launch {
+            delay(1000) // Simulate logout process
+            try {
+                // Replace with actual backend logout API call and local data clearing
+                _userProfile.postValue(null) // Clear profile data locally
+                _successMessage.postValue("Logged out successfully!")
+                // The fragment/activity observing this should then navigate to the login/onboarding screen.
+            } catch (e: Exception) {
+                _errorMessage.postValue("Logout failed: ${e.message}")
+            } finally {
+                _loading.postValue(false)
+            }
+        }
+    }
+
+    /** Clears the current error message to prevent it from being shown again. */
+    fun clearErrorMessage() {
+        _errorMessage.value = null
+    }
+
+    /** Clears the current success message to prevent it from being shown again. */
+    fun clearSuccessMessage() {
+        _successMessage.value = null
+    }
+}
+
+
+/**
+ * A professional and feature-rich Profile Fragment for the Earnzy app.
+ * This fragment displays user information and provides various settings and actions.
+ * It uses ViewModel, LiveData, and View Binding for a clean architectural approach.
+ * Design aims for modern Material Design without relying on generic "card" styles.
+ */
+class ProfileFragment : Fragment() {
+
+    private var _binding: FragmentProfileBinding? = null
+    // This property is only valid between onCreateView and onDestroyView.
+    private val binding get() = _binding!!
+
+    private lateinit var profileViewModel: ProfileViewModel
+
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        _binding = FragmentProfileBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        // Initialize ViewModel using ViewModelProvider.
+        // In a production app, consider using Hilt/Koin for dependency injection of ViewModels.
+        profileViewModel = ViewModelProvider(this).get(ProfileViewModel::class.java)
+
+        setupObservers()
+        setupClickListeners()
+
+        // Load profile data when the fragment is first created or recreated.
+        profileViewModel.loadUserProfile()
+    }
+
+    /**
+     * Sets up LiveData observers to react to changes in the ProfileViewModel.
+     * This updates the UI dynamically based on profile data, loading states, and messages.
+     */
+    private fun setupObservers() {
+        profileViewModel.userProfile.observe(viewLifecycleOwner) { profile ->
+            profile?.let {
+                binding.tvProfileName.text = it.name
+                binding.tvProfileEmail.text = it.email
+                
+                // Use Glide for efficient and professional image loading for the avatar.
+                Glide.with(this)
+                    .load(it.avatarUrl)
+                    .placeholder(R.drawable.ic_default_avatar) // Placeholder drawable for loading
+                    .error(R.drawable.ic_error_avatar)       // Error drawable if image fails to load
+                    .circleCrop() // Apply a circular crop for profile pictures
+                    .into(binding.ivProfileAvatar)
+
+                // Update UI for settings based on the loaded profile data
+                binding.switchNotifications.isChecked = it.settings.notificationsEnabled
+                // Note: The XML should contain a switch with ID 'switchTwoFactorAuth'
+                // binding.switchTwoFactorAuth.isChecked = it.settings.twoFactorEnabled 
+                // Add updates for other settings here as they are implemented in the UI.
+            }
+        }
+
+        profileViewModel.loading.observe(viewLifecycleOwner) { isLoading ->
+            // Show/hide a loading indicator (e.g., ProgressBar) to give user feedback.
+            binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
+            // Optionally, disable/enable user interaction with other UI elements while loading.
+            binding.scrollViewContent.alpha = if (isLoading) 0.5f else 1.0f // Visually dim content
+            binding.scrollViewContent.isClickable = !isLoading // Prevent clicks while loading
+        }
+
+        profileViewModel.errorMessage.observe(viewLifecycleOwner) { message ->
+            message?.let {
+                // Display error messages using a Material Design Snackbar for a professional look.
+                Snackbar.make(binding.root, it, Snackbar.LENGTH_LONG)
+                    .setAction(getString(R.string.dismiss)) { /* Optional action */ } // Action text should be in strings.xml
+                    .show()
+                profileViewModel.clearErrorMessage() // Consume the message to prevent re-showing
+            }
+        }
+
+        profileViewModel.successMessage.observe(viewLifecycleOwner) { message ->
+            message?.let {
+                // Display success messages using Snackbar.
+                Snackbar.make(binding.root, it, Snackbar.LENGTH_SHORT).show()
+                profileViewModel.clearSuccessMessage() // Consume the message
+            }
+        }
+    }
+
+    /**
+     * Sets up click listeners for all interactive UI elements in the fragment.
+     * Uses Navigation Component for screen transitions, providing a robust navigation flow.
+     */
+    private fun setupClickListeners() {
+        // --- Account Settings Section ---
+        binding.btnEditProfile.setOnClickListener {
+            // Navigate to an "Edit Profile" screen
+            findNavController().navigate(R.id.action_profileFragment_to_editProfileFragment)
+        }
+
+        binding.btnChangePassword.setOnClickListener {
+            // Navigate to a "Change Password" screen
+            findNavController().navigate(R.id.action_profileFragment_to_changePasswordFragment)
+        }
+        
+        // This button could lead to a screen to enable/disable 2FA or manage 2FA settings.
+        binding.btnTwoFactorAuth.setOnClickListener {
+            findNavController().navigate(R.id.action_profileFragment_to_twoFactorAuthSetupFragment)
+        }
+
+        // --- App Preferences Section ---
+        binding.switchNotifications.setOnCheckedChangeListener { _, isChecked ->
+            profileViewModel.updateNotificationSetting(isChecked)
+        }
+
+        binding.btnTheme.setOnClickListener {
+            // Implement a BottomSheetDialog or navigate to a dedicated theme selection screen.
+            Snackbar.make(binding.root, "Theme selection feature coming soon!", Snackbar.LENGTH_SHORT).show()
+            // findNavController().navigate(R.id.action_profileFragment_to_themeSettingsFragment)
+        }
+
+        binding.btnLanguage.setOnClickListener {
+            // Implement a dialog or navigate to language selection settings.
+            Snackbar.make(binding.root, "Language selection feature coming soon!", Snackbar.LENGTH_SHORT).show()
+            // findNavController().navigate(R.id.action_profileFragment_to_languageSettingsFragment)
+        }
+
+        // --- Support & Legal Section ---
+        binding.btnFaq.setOnClickListener {
+            // Navigate to an FAQ screen, which could be a WebView or a Fragment displaying FAQs.
+            findNavController().navigate(R.id.action_profileFragment_to_faqFragment)
+        }
+
+        binding.btnContactUs.setOnClickListener {
+            // Navigate to a "Contact Us" form or screen.
+            findNavController().navigate(R.id.action_profileFragment_to_contactUsFragment)
+        }
+
+        binding.btnPrivacyPolicy.setOnClickListener {
+            // Open a WebView or external browser for the Privacy Policy URL.
+            Snackbar.make(binding.root, "Opening Privacy Policy in browser...", Snackbar.LENGTH_SHORT).show()
+            // Example for opening URL:
+            // val uri = Uri.parse("https://earnzy.com/privacy")
+            // startActivity(Intent(Intent.ACTION_VIEW, uri))
+        }
+
+        binding.btnTermsOfService.setOnClickListener {
+            // Open a WebView or external browser for the Terms of Service URL.
+            Snackbar.make(binding.root, "Opening Terms of Service in browser...", Snackbar.LENGTH_SHORT).show()
+            // Example for opening URL:
+            // val uri = Uri.parse("https://earnzy.com/terms")
+            // startActivity(Intent(Intent.ACTION_VIEW, uri))
+        }
+
+        // --- Logout Button ---
+        binding.btnLogout.setOnClickListener {
+            // Trigger logout logic in ViewModel.
+            profileViewModel.logoutUser()
+            // After successful logout, navigate the user to the appropriate start destination
+            // (e.g., login screen, onboarding). This navigation logic should typically clear the back stack.
+            // Example using Navigation Component with back stack clear:
+            // findNavController().navigate(
+            //     R.id.action_profileFragment_to_loginFragment,
+            //     null,
+            //     NavOptions.Builder().setPopUpTo(R.id.main_nav_graph, true).build()
+            // )
+        }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null // Crucial for preventing memory leaks with View Binding.
+    }
+}
