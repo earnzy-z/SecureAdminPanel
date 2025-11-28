@@ -1,0 +1,625 @@
+package com.earnzy.app.fragments
+
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.compose.animation.*
+import androidx.compose.animation.core.*
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.ArrowDownward
+import androidx.compose.material.icons.filled.ArrowUpward
+import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material.icons.filled.Send
+import androidx.compose.material.icons.filled.Warning
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.LocalHapticFeedback
+import androidx.compose.ui.platform.ViewCompositionStrategy
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewModelScope
+import com.earnzy.app.ui.theme.EarnzyAppTheme
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
+import java.math.BigDecimal
+import java.text.NumberFormat
+import java.text.SimpleDateFormat
+import java.util.*
+
+data class Transaction(
+    val id: String,
+    val description: String,
+    val amount: BigDecimal,
+    val currency: String,
+    val type: TransactionType,
+    val date: Date
+)
+
+enum class TransactionType {
+    SENT, RECEIVED, TOP_UP, WITHDRAWAL, FEE
+}
+
+sealed class WalletState {
+    object Loading : WalletState()
+    data class Success(
+        val balance: BigDecimal,
+        val currency: String,
+        val transactions: List<Transaction>
+    ) : WalletState()
+    data class Error(val message: String) : WalletState()
+}
+
+class WalletRepository {
+    suspend fun fetchWalletData(): WalletState {
+        delay(1500)
+        return if (Random().nextBoolean()) {
+            WalletState.Success(
+                balance = BigDecimal("1234.56"),
+                currency = "USD",
+                transactions = listOf(
+                    Transaction("t1", "Payment to John Doe", BigDecimal("-50.00"), "USD", TransactionType.SENT, Date(System.currentTimeMillis() - 86400000 * 2)),
+                    Transaction("t2", "Received from Jane Smith", BigDecimal("120.75"), "USD", TransactionType.RECEIVED, Date(System.currentTimeMillis() - 86400000)),
+                    Transaction("t3", "Monthly Salary", BigDecimal("2500.00"), "USD", TransactionType.RECEIVED, Date(System.currentTimeMillis() - 86400000 * 5)),
+                    Transaction("t4", "Coffee Shop", BigDecimal("-5.50"), "USD", TransactionType.SENT, Date(System.currentTimeMillis() - 86400000 * 0.5)),
+                    Transaction("t5", "Top Up", BigDecimal("100.00"), "USD", TransactionType.TOP_UP, Date(System.currentTimeMillis() - 86400000 * 3)),
+                    Transaction("t6", "Bank Withdrawal", BigDecimal("-200.00"), "USD", TransactionType.WITHDRAWAL, Date(System.currentTimeMillis() - 86400000 * 4)),
+                    Transaction("t7", "Service Fee", BigDecimal("-1.50"), "USD", TransactionType.FEE, Date(System.currentTimeMillis() - 86400000 * 0.1)),
+                ).sortedByDescending { it.date }
+            )
+        } else {
+            WalletState.Error("Failed to load wallet data. Please check your internet connection and try again.")
+        }
+    }
+
+    suspend fun processSendMoney(amount: BigDecimal, recipient: String) {
+        delay(800)
+        if (Random().nextBoolean()) {
+            println("Sent $amount to $recipient successfully.")
+        } else {
+            throw Exception("Failed to send money.")
+        }
+    }
+
+    suspend fun processTopUp(amount: BigDecimal) {
+        delay(800)
+        if (Random().nextBoolean()) {
+            println("Topped up $amount successfully.")
+        } else {
+            throw Exception("Failed to top up.")
+        }
+    }
+}
+
+class WalletViewModel(private val repository: WalletRepository) : ViewModel() {
+    private val _walletState = MutableStateFlow<WalletState>(WalletState.Loading)
+    val walletState: StateFlow<WalletState> = _walletState.asStateFlow()
+
+    init {
+        fetchWalletData()
+    }
+
+    fun fetchWalletData(forceRefresh: Boolean = false) {
+        viewModelScope.launch {
+            if (_walletState.value !is WalletState.Success || forceRefresh) {
+                _walletState.value = WalletState.Loading
+            }
+            _walletState.value = repository.fetchWalletData()
+        }
+    }
+
+    fun sendMoney(amount: BigDecimal, recipient: String) {
+        viewModelScope.launch {
+            try {
+                repository.processSendMoney(amount, recipient)
+                fetchWalletData(true)
+            } catch (e: Exception) {
+                println("Error sending money: ${e.message}")
+                _walletState.value = WalletState.Error("Sending failed: ${e.message}")
+            }
+        }
+    }
+
+    fun receiveMoney() {
+        println("Showing receive options...")
+    }
+
+    fun topUp(amount: BigDecimal) {
+        viewModelScope.launch {
+            try {
+                repository.processTopUp(amount)
+                fetchWalletData(true)
+            } catch (e: Exception) {
+                println("Error topping up: ${e.message}")
+                _walletState.value = WalletState.Error("Top-up failed: ${e.message}")
+            }
+        }
+    }
+
+    companion object {
+        val Factory: ViewModelProvider.Factory = object : ViewModelProvider.Factory {
+            @Suppress("UNCHECKED_CAST")
+            override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                if (modelClass.isAssignableFrom(WalletViewModel::class.java)) {
+                    return WalletViewModel(WalletRepository()) as T
+                }
+                throw IllegalArgumentException("Unknown ViewModel class")
+            }
+        }
+    }
+}
+
+class WalletFragment : Fragment() {
+
+    private val walletViewModel: WalletViewModel by lazy {
+        ViewModelProvider(this, WalletViewModel.Factory)[WalletViewModel::class.java]
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        return ComposeView(requireContext()).apply {
+            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+            setContent {
+                EarnzyAppTheme {
+                    WalletScreen(walletViewModel)
+                }
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class, ExperimentalAnimationApi::class)
+@Composable
+fun WalletScreen(viewModel: WalletViewModel) {
+    val walletState by viewModel.walletState.collectAsState()
+    val haptic = LocalHapticFeedback.current
+
+    Scaffold(
+        topBar = {
+            CenterAlignedTopAppBar(
+                title = { Text("My Wallet", fontWeight = FontWeight.Bold) },
+                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.primaryContainer,
+                    titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer
+                )
+            )
+        }
+    ) { paddingValues ->
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
+                .background(MaterialTheme.colorScheme.background)
+        ) {
+            AnimatedContent(
+                targetState = walletState,
+                transitionSpec = {
+                    fadeIn(animationSpec = tween(600)) with fadeOut(animationSpec = tween(300))
+                }, label = "wallet_state_transition"
+            ) { targetState ->
+                when (targetState) {
+                    is WalletState.Loading -> {
+                        LoadingContent()
+                    }
+                    is WalletState.Success -> {
+                        WalletSuccessContent(
+                            balance = targetState.balance,
+                            currency = targetState.currency,
+                            transactions = targetState.transactions,
+                            onSendClick = { amount, recipient -> viewModel.sendMoney(amount, recipient) },
+                            onReceiveClick = { viewModel.receiveMoney() },
+                            onTopUpClick = { amount -> viewModel.topUp(amount) },
+                            onRefresh = { viewModel.fetchWalletData(true) }
+                        )
+                    }
+                    is WalletState.Error -> {
+                        ErrorContent(message = targetState.message) {
+                            viewModel.fetchWalletData(true)
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun LoadingContent() {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
+        Spacer(modifier = Modifier.height(16.dp))
+        Text("Loading wallet data...", style = MaterialTheme.typography.bodyLarge, color = MaterialTheme.colorScheme.onSurfaceVariant)
+    }
+}
+
+@Composable
+fun ErrorContent(message: String, onRetry: () -> Unit) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Icon(
+            imageVector = Icons.Default.Warning,
+            contentDescription = "Error",
+            tint = MaterialTheme.colorScheme.error,
+            modifier = Modifier.size(48.dp)
+        )
+        Spacer(modifier = Modifier.height(16.dp))
+        Text(
+            text = message,
+            style = MaterialTheme.typography.titleMedium,
+            color = MaterialTheme.colorScheme.error,
+            modifier = Modifier.padding(horizontal = 16.dp),
+            textAlign = androidx.compose.ui.text.style.TextAlign.Center
+        )
+        Spacer(modifier = Modifier.height(24.dp))
+        Button(onClick = onRetry) {
+            Text("Retry")
+        }
+    }
+}
+
+@OptIn(ExperimentalAnimationApi::class)
+@Composable
+fun WalletSuccessContent(
+    balance: BigDecimal,
+    currency: String,
+    transactions: List<Transaction>,
+    onSendClick: (amount: BigDecimal, recipient: String) -> Unit,
+    onReceiveClick: () -> Unit,
+    onTopUpClick: (amount: BigDecimal) -> Unit,
+    onRefresh: () -> Unit
+) {
+    val formattedBalance = remember(balance, currency) {
+        NumberFormat.getCurrencyInstance(Locale.US).apply {
+            this.currency = java.util.Currency.getInstance(currency)
+        }.format(balance)
+    }
+
+    LazyColumn(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.surface),
+        contentPadding = PaddingValues(16.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp)
+    ) {
+        item {
+            BalanceCard(formattedBalance = formattedBalance)
+        }
+
+        item {
+            QuickActionsRow(
+                onSendClick = { onSendClick(BigDecimal("100"), "Example Recipient") },
+                onReceiveClick = onReceiveClick,
+                onTopUpClick = { onTopUpClick(BigDecimal("250")) }
+            )
+        }
+
+        item {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "Recent Transactions",
+                    style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold),
+                    color = MaterialTheme.colorScheme.onSurface,
+                    modifier = Modifier.padding(vertical = 8.dp)
+                )
+                IconButton(onClick = onRefresh) {
+                    Icon(
+                        imageVector = Icons.Default.Refresh,
+                        contentDescription = "Refresh",
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+            }
+        }
+
+        if (transactions.isEmpty()) {
+            item {
+                Text(
+                    text = "No transactions yet.",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 16.dp),
+                    textAlign = androidx.compose.ui.text.style.TextAlign.Center
+                )
+            }
+        } else {
+            items(transactions, key = { it.id }) { transaction ->
+                TransactionItem(transaction = transaction)
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalAnimationApi::class)
+@Composable
+fun BalanceCard(formattedBalance: String) {
+    val haptic = LocalHapticFeedback.current
+    val balanceTransition = updateTransition(targetState = formattedBalance, label = "balance_transition")
+
+    val animatedScale by balanceTransition.animateFloat(
+        transitionSpec = { spring(stiffness = Spring.StiffnessLow) },
+        label = "balance_scale_animation"
+    ) { if (it == formattedBalance) 1f else 0.95f }
+
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(200.dp)
+            .graphicsLayer {
+                scaleX = animatedScale
+                scaleY = animatedScale
+            }
+            .clickable { haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove) },
+        shape = RoundedCornerShape(28.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 10.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primary)
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(
+                    brush = Brush.linearGradient(
+                        colors = listOf(
+                            MaterialTheme.colorScheme.primary,
+                            MaterialTheme.colorScheme.secondary
+                        ),
+                        start = Offset(0f, 0f),
+                        end = Offset(Float.POSITIVE_INFINITY, Float.POSITIVE_INFINITY)
+                    )
+                ),
+            contentAlignment = Alignment.Center
+        ) {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center,
+                modifier = Modifier.fillMaxSize()
+            ) {
+                Text(
+                    text = "Total Balance",
+                    style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.8f)
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                AnimatedContent(
+                    targetState = formattedBalance,
+                    transitionSpec = {
+                        (slideInVertically(
+                            animationSpec = spring(stiffness = Spring.StiffnessMediumLow),
+                            initialOffsetY = { fullHeight -> fullHeight / 2 }
+                        ) + fadeIn(animationSpec = tween(durationMillis = 300))) with
+                                (slideOutVertically(
+                                    animationSpec = spring(stiffness = Spring.StiffnessMediumLow),
+                                    targetOffsetY = { fullHeight -> -fullHeight / 2 }
+                                ) + fadeOut(animationSpec = tween(durationMillis = 300)))
+                    }, label = "balance_amount_animation"
+                ) { targetBalance ->
+                    Text(
+                        text = targetBalance,
+                        style = MaterialTheme.typography.displaySmall.copy(
+                            fontWeight = FontWeight.ExtraBold,
+                            fontSize = 48.sp
+                        ),
+                        color = MaterialTheme.colorScheme.onPrimary,
+                        modifier = Modifier.padding(horizontal = 16.dp)
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(24.dp))
+                Canvas(modifier = Modifier.size(100.dp, 12.dp)) {
+                    val width = size.width
+                    val height = size.height
+                    drawRect(
+                        color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.1f),
+                        topLeft = Offset(width * 0.1f, 0f),
+                        size = androidx.compose.ui.geometry.Size(width * 0.8f, height)
+                    )
+                    drawPath(
+                        path = androidx.compose.ui.graphics.Path().apply {
+                            moveTo(width * 0.3f, height)
+                            lineTo(width * 0.5f, 0f)
+                            lineTo(width * 0.7f, height)
+                            close()
+                        },
+                        color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.2f)
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun QuickActionsRow(
+    onSendClick: () -> Unit,
+    onReceiveClick: () -> Unit,
+    onTopUpClick: () -> Unit
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 8.dp),
+        horizontalArrangement = Arrangement.SpaceEvenly,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        QuickActionButton(
+            icon = Icons.Default.Send,
+            label = "Send",
+            onClick = onSendClick
+        )
+        QuickActionButton(
+            icon = Icons.Default.ArrowDownward,
+            label = "Receive",
+            onClick = onReceiveClick
+        )
+        QuickActionButton(
+            icon = Icons.Default.Add,
+            label = "Top Up",
+            onClick = onTopUpClick
+        )
+    }
+}
+
+@Composable
+fun QuickActionButton(
+    icon: androidx.compose.ui.graphics.vector.ImageVector,
+    label: String,
+    onClick: () -> Unit
+) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier
+            .clip(RoundedCornerShape(16.dp))
+            .clickable(onClick = onClick)
+            .padding(12.dp)
+    ) {
+        Surface(
+            shape = RoundedCornerShape(20.dp),
+            color = MaterialTheme.colorScheme.secondaryContainer,
+            modifier = Modifier.size(64.dp),
+            shadowElevation = 6.dp
+        ) {
+            Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
+                Icon(
+                    imageVector = icon,
+                    contentDescription = label,
+                    tint = MaterialTheme.colorScheme.onSecondaryContainer,
+                    modifier = Modifier.size(36.dp)
+                )
+            }
+        }
+        Spacer(modifier = Modifier.height(8.dp))
+        Text(
+            text = label,
+            style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.Medium),
+            color = MaterialTheme.colorScheme.onSurface
+        )
+    }
+}
+
+@Composable
+fun TransactionItem(transaction: Transaction) {
+    val amountColor = when (transaction.type) {
+        TransactionType.SENT, TransactionType.WITHDRAWAL, TransactionType.FEE -> MaterialTheme.colorScheme.error
+        TransactionType.RECEIVED, TransactionType.TOP_UP -> MaterialTheme.colorScheme.primary
+    }
+
+    val icon = when (transaction.type) {
+        TransactionType.SENT -> Icons.Default.ArrowUpward
+        TransactionType.RECEIVED -> Icons.Default.ArrowDownward
+        TransactionType.TOP_UP -> Icons.Default.Add
+        TransactionType.WITHDRAWAL, TransactionType.FEE -> Icons.Default.Info
+    }
+
+    val iconBackgroundColor = when (transaction.type) {
+        TransactionType.SENT, TransactionType.WITHDRAWAL, TransactionType.FEE -> MaterialTheme.colorScheme.errorContainer.copy(alpha = 0.6f)
+        TransactionType.RECEIVED, TransactionType.TOP_UP -> MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.6f)
+    }
+
+    val formattedAmount = remember(transaction.amount, transaction.currency) {
+        NumberFormat.getCurrencyInstance(Locale.US).apply {
+            this.currency = java.util.Currency.getInstance(transaction.currency)
+        }.format(transaction.amount.abs())
+    }
+
+    val formattedDate = remember(transaction.date) {
+        SimpleDateFormat("MMM dd, HH:mm", Locale.getDefault()).format(transaction.date)
+    }
+
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .animateItemPlacement(animationSpec = tween(durationMillis = 300, easing = LinearOutSlowInEasing))
+            .clickable { /* Handle transaction item click */ },
+        shape = RoundedCornerShape(18.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 3.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Surface(
+                shape = RoundedCornerShape(14.dp),
+                color = iconBackgroundColor,
+                modifier = Modifier.size(52.dp)
+            ) {
+                Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
+                    Icon(
+                        imageVector = icon,
+                        contentDescription = transaction.type.name,
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.size(30.dp)
+                    )
+                }
+            }
+            Spacer(modifier = Modifier.width(16.dp))
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = transaction.description,
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = MaterialTheme.colorScheme.onSurface,
+                    fontWeight = FontWeight.SemiBold
+                )
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(
+                    text = formattedDate,
+                    style = MaterialTheme.typography.labelMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+            Spacer(modifier = Modifier.width(16.dp))
+            Text(
+                text = (if (transaction.amount < BigDecimal.ZERO) "-" else "+") + formattedAmount,
+                style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
+                color = amountColor
+            )
+        }
+    }
+}
