@@ -1,0 +1,29 @@
+To achieve a truly "professional" design, implement specific animations, integrate backend calls, and add new features to your `fragments kts` and `XML` files, the following detailed information is required:
+
+**1. Design and User Interface (UI/UX) Specifications:**
+    *   **High-Fidelity Mockups:** Provide detailed UI/UX mockups, wireframes, or a comprehensive design system specification. This must include specific layouts, component designs, precise color palettes (e.g., HEX codes), typography (font families, sizes, weights), detailed spacing guidelines, and iconography.
+    *   **Animation Details:** Describe the exact animations desired for transitions, state changes, or user interactions. For example: specific fade-in durations, slide directions and speeds, ripple effects, parallax scrolling, or precise transformations for UI elements.
+    *   **"Triangle Rectangle Shape Cards":** Clarify what these refer to. Are they literal geometric shapes that display content, or a specific stylistic approach to presenting information blocks? Provide visual examples or explicit descriptions.
+    *   **Elements to Remove:** Specify precisely which "cards etc." or other existing UI elements should be removed from the current fragments and layouts.
+    *   **Accessibility Guidelines:** Any specific accessibility requirements (e.g., WCAG compliance levels).
+
+**2. Backend Integration Details:**
+    *   **API Endpoints:** List the exact URLs for all backend API endpoints that need to be called.
+    *   **HTTP Methods:** Specify the HTTP method (GET, POST, PUT, DELETE, etc.) for each endpoint.
+    *   **Request Payloads:** Provide the precise structure and content of any request bodies (e.g., JSON schema) for POST/PUT requests.
+    *   **Response Structures:** Provide the expected JSON (or other format) response structure for each API call, including field names and data types.
+    *   **Authentication:** Detail the authentication mechanism (e.g., OAuth 2.0, API keys, JWT tokens) and how credentials should be securely handled.
+    *   **Error Handling:** Specify how API errors should be caught, processed, and displayed to the user within the UI.
+    *   **Data Models:** Define the data models or classes required to parse and utilize the backend data effectively.
+
+**3. New Feature Specifications:**
+    *   **Feature List:** Provide a clear, itemized list of *each specific new feature* desired.
+    *   **Feature Functionality:** For each feature, describe its core purpose, how it should operate step-by-step, all relevant user interactions, and the expected outcome.
+    *   **User Flows:** Outline the complete user journey for interacting with each new feature.
+    *   **Data Requirements:** Specify any new data sources, complex calculations, or business logic required for these features.
+
+**4. Current Code Context:**
+    *   **Affected Fragments/XML:** Identify the specific `kts` files (e.g., build scripts, composable fragments, logic files) and `XML` layout files that require modification.
+    *   **Current Functionality:** Briefly describe the current purpose and functionality of these files, if relevant, to provide context for the desired changes.
+
+Without these concrete and detailed specifications, any attempt to implement "professional" design, desired "animations," specific backend integrations, or "more features" would be based purely on speculation and may not align with your specific vision or requirements.
