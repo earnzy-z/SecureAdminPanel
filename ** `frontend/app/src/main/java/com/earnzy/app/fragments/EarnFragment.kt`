@@ -1,0 +1,657 @@
+package com.earnzy.app.fragments
+
+import android.animation.AnimatorInflater
+import android.animation.ObjectAnimator
+import android.content.Context
+import android.graphics.Rect
+import android.graphics.drawable.GradientDrawable
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.view.animation.AnimationUtils
+import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.viewModelScope
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.earnzy.app.R // Assume R file exists with necessary IDs, drawables, colors, anims, and animators
+import com.earnzy.app.databinding.FragmentEarnBinding // Assume view binding is enabled and fragment_earn.xml exists
+import com.earnzy.app.databinding.ItemEarnCardRectangleBinding // Assume item_earn_card_rectangle.xml exists and can be adapted
+import com.earnzy.app.databinding.ItemEarnCardTriangleBinding // Assume item_earn_card_triangle.xml exists
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
+import retrofit2.HttpException
+import java.io.IOException
+
+//region Data Models
+/**
+ * Sealed class representing various types of earn opportunities.
+ * Each type holds specific data relevant to its display and functionality.
+ */
+sealed class EarnItem {
+    abstract val id: String
+    abstract val title: String
+    abstract val description: String
+    abstract val points: Int
+    abstract val iconResId: Int // Resource ID for an icon to represent the task
+
+    data class TriangleCard(
+        override val id: String,
+        override val title: String,
+        override val description: String,
+        override val points: Int,
+        override val iconResId: Int,
+        val cornerColorResId: Int, // Color for the prominent triangular corner/element
+        val backgroundColorResId: Int // Background color for the card
+    ) : EarnItem()
+
+    data class RectangleCard(
+        override val id: String,
+        override val title: String,
+        override val description: String,
+        override val points: Int,
+        override val iconResId: Int,
+        val bannerImageResId: Int?, // Optional banner image for the card
+        val gradientStartColorResId: Int, // Start color for a background gradient
+        val gradientEndColorResId: Int // End color for a background gradient
+    ) : EarnItem()
+
+    data class SurveyTask(
+        override val id: String,
+        override val title: String,
+        override val description: String,
+        override val points: Int,
+        override val iconResId: Int,
+        val estimatedTimeMinutes: Int // Specific detail for survey tasks
+    ) : EarnItem()
+
+    data class AppInstallTask(
+        override val id: String,
+        override val title: String,
+        override val description: String,
+        override val points: Int,
+        override val iconResId: Int,
+        val appPackageName: String // Specific detail for app install tasks
+    ) : EarnItem()
+}
+//endregion
+
+//region Backend Interface (Placeholder and Dummy Implementation)
+/**
+ * Interface defining the API calls for earning opportunities.
+ * In a real application, this would typically be a Retrofit interface.
+ */
+interface EarnzyApiService {
+    suspend fun getEarnOpportunities(): List<EarnItem>
+    suspend fun completeEarnOpportunity(itemId: String): Boolean
+}
+
+/**
+ * Dummy implementation of [EarnzyApiService] for demonstration purposes.
+ * Simulates network delays and provides a fixed list of mock earn items.
+ */
+class DummyEarnzyApiService : EarnzyApiService {
+    val mockItems = mutableListOf(
+        EarnItem.TriangleCard(
+            id = "t1",
+            title = "Daily Quest Bonus",
+            description = "Complete 3 tasks today for extra points!",
+            points = 500,
+            iconResId = R.drawable.ic_trophy,
+            cornerColorResId = R.color.earnzy_primary_variant,
+            backgroundColorResId = R.color.earnzy_accent
+        ),
+        EarnItem.RectangleCard(
+            id = "r1",
+            title = "Watch & Earn",
+            description = "Watch a short video ad and get points.",
+            points = 100,
+            iconResId = R.drawable.ic_play_video,
+            bannerImageResId = R.drawable.img_banner_video,
+            gradientStartColorResId = R.color.earnzy_gradient_start,
+            gradientEndColorResId = R.color.earnzy_gradient_end
+        ),
+        EarnItem.SurveyTask(
+            id = "s1",
+            title = "Quick Opinion Survey",
+            description = "Share your thoughts for 5 minutes.",
+            points = 250,
+            iconResId = R.drawable.ic_survey,
+            estimatedTimeMinutes = 5
+        ),
+        EarnItem.AppInstallTask(
+            id = "a1",
+            title = "Install & Play 'Earny Run'",
+            description = "Install the game and reach level 5.",
+            points = 1500,
+            iconResId = R.drawable.ic_download_app,
+            appPackageName = "com.earnzy.earnyrun"
+        ),
+        EarnItem.TriangleCard(
+            id = "t2",
+            title = "Weekend Boost Offer",
+            description = "Earn double points on selected tasks this weekend!",
+            points = 750,
+            iconResId = R.drawable.ic_lightning,
+            cornerColorResId = R.color.earnzy_secondary,
+            backgroundColorResId = R.color.earnzy_secondary_variant
+        ),
+        EarnItem.RectangleCard(
+            id = "r2",
+            title = "Exclusive Newsletter",
+            description = "Subscribe to our newsletter for 300 points.",
+            points = 300,
+            iconResId = R.drawable.ic_email,
+            bannerImageResId = null,
+            gradientStartColorResId = R.color.earnzy_gradient_end,
+            gradientEndColorResId = R.color.earnzy_gradient_start
+        )
+    )
+
+    override suspend fun getEarnOpportunities(): List<EarnItem> {
+        delay(1500) // Simulate network delay
+        return mockItems.shuffled() // Return a shuffled list each time for variety
+    }
+
+    override suspend fun completeEarnOpportunity(itemId: String): Boolean {
+        delay(500) // Simulate network delay for completion
+        val itemToRemove = mockItems.find { it.id == itemId }
+        return if (itemToRemove != null) {
+            mockItems.remove(itemToRemove) // Remove completed item from mock list
+            true
+        } else {
+            false
+        }
+    }
+}
+//endregion
+
+//region Repository (Placeholder)
+/**
+ * Repository layer to abstract data sources (API calls, database, etc.).
+ * Handles error wrapping and provides a clean API to the ViewModel.
+ */
+class EarnRepository(private val apiService: EarnzyApiService) {
+    suspend fun getEarnOpportunities(): Result<List<EarnItem>> {
+        return try {
+            Result.success(apiService.getEarnOpportunities())
+        } catch (e: IOException) {
+            Result.failure(Exception("Network error: Please check your internet connection.", e))
+        } catch (e: HttpException) {
+            Result.failure(Exception("Server error: ${e.code()} - ${e.message()}", e))
+        } catch (e: Exception) {
+            Result.failure(Exception("An unexpected error occurred.", e))
+        }
+    }
+
+    suspend fun completeEarnOpportunity(itemId: String): Result<Boolean> {
+        return try {
+            Result.success(apiService.completeEarnOpportunity(itemId))
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+}
+//endregion
+
+//region ViewModel
+/**
+ * ViewModel for the EarnFragment, handling business logic and data provision to the UI.
+ * Uses StateFlow for reactive UI updates and Coroutines for background tasks.
+ */
+class EarnViewModel(private val repository: EarnRepository) : ViewModel() {
+
+    private val _earnItems = MutableStateFlow<List<EarnItem>>(emptyList())
+    val earnItems: StateFlow<List<EarnItem>> = _earnItems.asStateFlow()
+
+    private val _isLoading = MutableStateFlow(false)
+    val isLoading: StateFlow<Boolean> = _isLoading.asStateFlow()
+
+    private val _errorMessage = MutableStateFlow<String?>(null)
+    val errorMessage: StateFlow<String?> = _errorMessage.asStateFlow()
+
+    private val _userTotalPoints = MutableStateFlow(12345) // Initial example points
+    val userTotalPoints: StateFlow<Int> = _userTotalPoints.asStateFlow()
+
+    init {
+        fetchEarnOpportunities() // Fetch opportunities on ViewModel initialization
+    }
+
+    /**
+     * Fetches earn opportunities from the repository.
+     * @param forceRefresh If true, forces a refresh even if already loading.
+     */
+    fun fetchEarnOpportunities(forceRefresh: Boolean = false) {
+        if (_isLoading.value && !forceRefresh) return // Prevent multiple concurrent fetches
+
+        _isLoading.value = true
+        _errorMessage.value = null // Clear previous error messages
+
+        viewModelScope.launch {
+            val result = repository.getEarnOpportunities()
+            result.onSuccess { items ->
+                _earnItems.value = items
+            }.onFailure { exception ->
+                _errorMessage.value = exception.message ?: "Failed to load opportunities."
+            }
+            _isLoading.value = false
+        }
+    }
+
+    /**
+     * Attempts to mark an opportunity as complete.
+     * Updates the UI and user points if successful.
+     */
+    fun completeOpportunity(itemId: String) {
+        viewModelScope.launch {
+            _isLoading.value = true // Indicate operation in progress
+            val result = repository.completeEarnOpportunity(itemId)
+            result.onSuccess { success ->
+                if (success) {
+                    // Remove the completed item from the list
+                    val completedItem = _earnItems.value.find { it.id == itemId }
+                    _earnItems.value = _earnItems.value.filter { it.id != itemId }
+
+                    // Update user points (in a real app, points would come from backend)
+                    completedItem?.let {
+                        _userTotalPoints.value += it.points
+                    }
+                } else {
+                    _errorMessage.value = "Failed to complete opportunity."
+                }
+            }.onFailure { exception ->
+                _errorMessage.value = exception.message ?: "Error completing opportunity."
+            }
+            _isLoading.value = false
+        }
+    }
+
+    /**
+     * Factory for creating instances of [EarnViewModel] with dependency injection.
+     */
+    class Factory(private val repository: EarnRepository) : ViewModelProvider.Factory {
+        override fun <T : ViewModel> create(modelClass: Class<T>): T {
+            if (modelClass.isAssignableFrom(EarnViewModel::class.java)) {
+                @Suppress("UNCHECKED_CAST")
+                return EarnViewModel(repository) as T
+            }
+            throw IllegalArgumentException("Unknown ViewModel class")
+        }
+    }
+}
+//endregion
+
+//region RecyclerView Adapter
+/**
+ * RecyclerView Adapter for displaying different types of [EarnItem]s with distinct layouts and animations.
+ */
+class EarnAdapter(private val onEarnItemClick: (EarnItem) -> Unit) :
+    RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+
+    private var earnItems: List<EarnItem> = emptyList()
+
+    /**
+     * Updates the list of items using DiffUtil for efficient UI updates and animations.
+     */
+    fun submitList(newItems: List<EarnItem>) {
+        val diffResult = DiffUtil.calculateDiff(object : DiffUtil.Callback() {
+            override fun getOldListSize(): Int = earnItems.size
+            override fun getNewListSize(): Int = newItems.size
+            override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+                return earnItems[oldItemPosition].id == newItems[newItemPosition].id
+            }
+
+            override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+                return earnItems[oldItemPosition] == newItems[newItemPosition]
+            }
+        })
+        earnItems = newItems
+        diffResult.dispatchUpdatesTo(this)
+    }
+
+    /**
+     * Determines the view type for a given position based on the [EarnItem] type.
+     */
+    override fun getItemViewType(position: Int): Int {
+        return when (earnItems[position]) {
+            is EarnItem.TriangleCard -> VIEW_TYPE_TRIANGLE_CARD
+            is EarnItem.RectangleCard -> VIEW_TYPE_RECTANGLE_CARD
+            is EarnItem.SurveyTask, is EarnItem.AppInstallTask -> VIEW_TYPE_GENERIC_TASK
+        }
+    }
+
+    /**
+     * Creates new ViewHolders based on the item view type.
+     */
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        val inflater = LayoutInflater.from(parent.context)
+        return when (viewType) {
+            VIEW_TYPE_TRIANGLE_CARD -> {
+                val binding = ItemEarnCardTriangleBinding.inflate(inflater, parent, false)
+                TriangleCardViewHolder(binding)
+            }
+            VIEW_TYPE_RECTANGLE_CARD -> {
+                val binding = ItemEarnCardRectangleBinding.inflate(inflater, parent, false)
+                RectangleCardViewHolder(binding)
+            }
+            VIEW_TYPE_GENERIC_TASK -> {
+                // Reuse rectangle card binding for generic tasks, assuming it provides a suitable base.
+                // A dedicated generic task item layout would be ideal here if designs diverge significantly.
+                val binding = ItemEarnCardRectangleBinding.inflate(inflater, parent, false)
+                GenericTaskViewHolder(binding)
+            }
+            else -> throw IllegalArgumentException("Unknown view type: $viewType")
+        }
+    }
+
+    /**
+     * Binds data to the ViewHolder and applies item animations.
+     */
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        val item = earnItems[position]
+        when (holder) {
+            is TriangleCardViewHolder -> holder.bind(item as EarnItem.TriangleCard)
+            is RectangleCardViewHolder -> holder.bind(item as EarnItem.RectangleCard)
+            is GenericTaskViewHolder -> holder.bind(item)
+        }
+        setFadeInAnimation(holder.itemView) // Apply animation on bind
+    }
+
+    override fun getItemCount(): Int = earnItems.size
+
+    /**
+     * Applies a fade-in-from-bottom animation to the item view.
+     */
+    private fun setFadeInAnimation(view: View) {
+        val animation = AnimationUtils.loadAnimation(view.context, R.anim.fade_in_from_bottom)
+        view.startAnimation(animation)
+    }
+
+    /**
+     * Base ViewHolder class to handle common click listeners.
+     */
+    abstract inner class BaseViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        init {
+            itemView.setOnClickListener {
+                val position = adapterPosition
+                if (position != RecyclerView.NO_POSITION) {
+                    onEarnItemClick(earnItems[position])
+                }
+            }
+        }
+    }
+
+    /**
+     * ViewHolder for [EarnItem.TriangleCard] items.
+     * Assumes `item_earn_card_triangle.xml` includes a view that can visually represent a triangle or corner element.
+     */
+    inner class TriangleCardViewHolder(private val binding: ItemEarnCardTriangleBinding) : BaseViewHolder(binding.root) {
+        fun bind(item: EarnItem.TriangleCard) {
+            binding.apply {
+                cardTitle.text = item.title
+                cardDescription.text = item.description
+                cardPoints.text = "+${item.points}"
+                cardIcon.setImageResource(item.iconResId)
+                root.setCardBackgroundColor(root.context.getColor(item.backgroundColorResId))
+                // Assuming triangleCornerView is a view that displays the corner color,
+                // perhaps with a custom background drawable (e.g., shape_triangle_corner.xml)
+                binding.triangleCornerView.setBackgroundResource(item.cornerColorResId) // Set background resource or just color
+            }
+        }
+    }
+
+    /**
+     * ViewHolder for [EarnItem.RectangleCard] items.
+     * Supports optional banner images and gradient backgrounds.
+     */
+    inner class RectangleCardViewHolder(private val binding: ItemEarnCardRectangleBinding) : BaseViewHolder(binding.root) {
+        fun bind(item: EarnItem.RectangleCard) {
+            binding.apply {
+                cardTitle.text = item.title
+                cardDescription.text = item.description
+                cardPoints.text = "+${item.points}"
+                cardIcon.setImageResource(item.iconResId)
+
+                // Set gradient background programmatically
+                val gradientDrawable = GradientDrawable(
+                    GradientDrawable.Orientation.TL_BR, // Top-Left to Bottom-Right gradient
+                    intArrayOf(
+                        root.context.getColor(item.gradientStartColorResId),
+                        root.context.getColor(item.gradientEndColorResId)
+                    )
+                )
+                gradientDrawable.cornerRadius = root.radius // Apply card corner radius
+                root.background = gradientDrawable // Set the gradient as the card's background
+
+                if (item.bannerImageResId != null) {
+                    bannerImageView.visibility = View.VISIBLE
+                    bannerImageView.setImageResource(item.bannerImageResId)
+                } else {
+                    bannerImageView.visibility = View.GONE
+                }
+            }
+        }
+    }
+
+    /**
+     * ViewHolder for generic [EarnItem] tasks (Survey, AppInstall).
+     * Reuses the `ItemEarnCardRectangleBinding` for a consistent card-like appearance.
+     */
+    inner class GenericTaskViewHolder(private val binding: ItemEarnCardRectangleBinding) : BaseViewHolder(binding.root) {
+        fun bind(item: EarnItem) {
+            binding.apply {
+                cardTitle.text = item.title
+                cardDescription.text = item.description
+                cardPoints.text = "+${item.points}"
+                cardIcon.setImageResource(item.iconResId)
+                bannerImageView.visibility = View.GONE // Hide banner for generic tasks
+
+                // Set a default or type-specific background for generic tasks
+                // Using a solid color as an example.
+                root.setCardBackgroundColor(root.context.getColor(R.color.earnzy_card_background_generic))
+
+                // Optionally, add more details based on specific task types
+                val extraInfo = when (item) {
+                    is EarnItem.SurveyTask -> "Est. ${item.estimatedTimeMinutes} min"
+                    is EarnItem.AppInstallTask -> "App: ${item.appPackageName}"
+                    else -> ""
+                }
+                // If there was an extra TextView in the layout for this, we could use it:
+                // binding.extraDetailsTextView.text = extraInfo
+                // For now, it's implicitly part of the description or not shown.
+            }
+        }
+    }
+
+    companion object {
+        private const val VIEW_TYPE_TRIANGLE_CARD = 1
+        private const val VIEW_TYPE_RECTANGLE_CARD = 2
+        private const val VIEW_TYPE_GENERIC_TASK = 3
+    }
+}
+//endregion
+
+//region EarnFragment
+/**
+ * Main fragment for displaying earn opportunities in a professional and animated manner.
+ * Integrates with ViewModel for data management and RecyclerView for list display.
+ */
+class EarnFragment : Fragment() {
+
+    private var _binding: FragmentEarnBinding? = null
+    private val binding get() = _binding!!
+
+    // Initialize ViewModel using the custom factory, injecting the repository with a dummy service.
+    private val earnViewModel: EarnViewModel by viewModels {
+        EarnViewModel.Factory(EarnRepository(DummyEarnzyApiService()))
+    }
+
+    private lateinit var earnAdapter: EarnAdapter
+
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        _binding = FragmentEarnBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        setupRecyclerView()
+        setupSwipeRefresh()
+        observeViewModel()
+        setupEventListeners()
+
+        // Apply a subtle fragment entry animation
+        view.alpha = 0f
+        view.translationY = resources.getDimensionPixelSize(R.dimen.fragment_enter_translation_y).toFloat()
+        view.animate()
+            .alpha(1f)
+            .translationY(0f)
+            .setDuration(400)
+            .start()
+
+        // Load total points with a slight animation after a delay for better visual flow
+        viewLifecycleOwner.lifecycleScope.launch {
+            delay(100)
+            val animator = AnimatorInflater.loadAnimator(context, R.animator.points_text_fade_in) as ObjectAnimator
+            animator.target = binding.totalPointsTextView
+            animator.start()
+        }
+    }
+
+    /**
+     * Configures the RecyclerView with its adapter and layout manager.
+     */
+    private fun setupRecyclerView() {
+        earnAdapter = EarnAdapter { earnItem ->
+            handleEarnItemClick(earnItem)
+        }
+        binding.recyclerViewEarn.apply {
+            layoutManager = LinearLayoutManager(context)
+            adapter = earnAdapter
+            setHasFixedSize(true)
+            // Add custom item decoration for professional spacing between cards
+            addItemDecoration(EarnItemDecoration(resources.getDimensionPixelSize(R.dimen.item_card_spacing)))
+        }
+    }
+
+    /**
+     * Sets up the SwipeRefreshLayout for pull-to-refresh functionality.
+     */
+    private fun setupSwipeRefresh() {
+        binding.swipeRefreshLayout.setOnRefreshListener {
+            earnViewModel.fetchEarnOpportunities(forceRefresh = true)
+        }
+    }
+
+    /**
+     * Observes LiveData/StateFlow from the ViewModel to update the UI.
+     */
+    private fun observeViewModel() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            earnViewModel.earnItems.collect { items ->
+                earnAdapter.submitList(items)
+                binding.emptyStateGroup.visibility = if (items.isEmpty()) View.VISIBLE else View.GONE
+                // Trigger RecyclerView layout animation if new items are loaded
+                if (items.isNotEmpty() && !binding.swipeRefreshLayout.isRefreshing) {
+                    binding.recyclerViewEarn.scheduleLayoutAnimation()
+                }
+            }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            earnViewModel.isLoading.collect { isLoading ->
+                // Show/hide progress bar, but not if swipe-to-refresh is already active
+                binding.progressBar.visibility = if (isLoading && !binding.swipeRefreshLayout.isRefreshing) View.VISIBLE else View.GONE
+                binding.swipeRefreshLayout.isRefreshing = isLoading // Control refresh indicator
+            }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            earnViewModel.errorMessage.collect { message ->
+                message?.let {
+                    Toast.makeText(context, it, Toast.LENGTH_LONG).show()
+                    earnViewModel.errorMessage.value = null // Consume the message to avoid re-showing
+                }
+            }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            earnViewModel.userTotalPoints.collect { points ->
+                binding.totalPointsTextView.text = points.toString()
+                // Future enhancement: Add a subtle animation for point changes, e.g., pulse animation
+            }
+        }
+    }
+
+    /**
+     * Sets up click listeners for various UI elements.
+     */
+    private fun setupEventListeners() {
+        binding.refreshButton.setOnClickListener {
+            earnViewModel.fetchEarnOpportunities(forceRefresh = true)
+        }
+
+        binding.historyButton.setOnClickListener {
+            Toast.makeText(context, "Navigating to Earnings History (Not Implemented)", Toast.LENGTH_SHORT).show()
+            // In a real app: findNavController().navigate(R.id.action_earnFragment_to_historyFragment)
+        }
+
+        binding.infoButton.setOnClickListener {
+            Toast.makeText(context, "Showing information about Earnzy (Not Implemented)", Toast.LENGTH_SHORT).show()
+            // In a real app: show a custom AlertDialog or navigate to an info screen
+        }
+    }
+
+    /**
+     * Handles clicks on individual earn items, showing a confirmation dialog.
+     */
+    private fun handleEarnItemClick(item: EarnItem) {
+        // Show a professional dialog to confirm task attempt
+        val dialog = AlertDialog.Builder(requireContext(), R.style.AppTheme_AlertDialog) // Assume custom dialog style for professionalism
+            .setTitle("Attempt \"${item.title}\"?")
+            .setMessage("Are you sure you want to attempt this task for ${item.points} points?")
+            .setPositiveButton("Yes, Proceed") { dialog, _ ->
+                earnViewModel.completeOpportunity(item.id)
+                Toast.makeText(context, "Attempting to complete ${item.title}...", Toast.LENGTH_SHORT).show()
+                dialog.dismiss()
+            }
+            .setNegativeButton("Cancel") { dialog, _ ->
+                dialog.dismiss()
+            }
+            .create()
+        dialog.show()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null // Clear view binding reference to prevent memory leaks
+    }
+
+    /**
+     * Custom [RecyclerView.ItemDecoration] to add consistent vertical spacing between items.
+     */
+    class EarnItemDecoration(private val verticalSpaceHeight: Int) : RecyclerView.ItemDecoration() {
+        override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
+            outRect.bottom = verticalSpaceHeight // Add space below each item
+            if (parent.getChildAdapterPosition(view) == 0) {
+                outRect.top = verticalSpaceHeight // Add top margin only for the first item
+            }
+        }
+    }
+}
+//endregion
